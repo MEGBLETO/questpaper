@@ -1,36 +1,25 @@
 
 require('dotenv').config()
 const express = require('express')
-const mysql = require('mysql')
+
+
+
+//importing my routes
+const route = require('./routes/index')
+
+
+ const app = express()
 
 
 
 
-//connection a ma base de donnee
 
 
-const dbconn = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'questpaper',
-    port     : '8889'
-})
-
-console.log(process.env.HOST)
-
-dbconn.connect((err) =>{
-    if(err){
-        throw(err)
-    }
-    console.log('MySql connected...')
- });
-  
+//ici je pointe vers le fichier ou mes routes sont definies
+ app.use('/api', route)
 
 
 
-
-const app = express()
 const PORT =process.env.PORT || 5000
 
 
