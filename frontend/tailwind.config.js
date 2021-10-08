@@ -5,6 +5,9 @@ module.exports = {
     extend: {
       fontFamily: {
         'cookie': ['Cookie', 'cursive'],
+     },
+     backgroundImage: {
+      'hero-image': "url('./img/hero-bg.jpg')",
      }
     },
   },
