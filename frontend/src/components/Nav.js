@@ -4,7 +4,7 @@ import Login from "../components/Login";
 
 const Nav = () => {
   return (
-    <div className="bg-gray-500 p-4 flex justify-between text-white">
+    <div className="bg-gray-800 sticky z-10 top-0 p-4 flex justify-between text-white">
       <h1 className="flex-1 font-cookie text-3xl">QuestPaper</h1>
 
       <ul className="hidden sm:flex space-x-3 text-center items-center">
