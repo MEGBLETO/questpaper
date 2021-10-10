@@ -1,6 +1,8 @@
 import React from "react";
-import { Route, Link, Switch } from "react-router-dom";
-import Login from "../components/Login";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { Scrollchor } from 'react-scrollchor';
+import Login from "../Pages/Login";
+import Home from '../Pages/Home'
 
 const Nav = () => {
   return (
@@ -9,11 +11,11 @@ const Nav = () => {
 
       <ul className="hidden sm:flex space-x-3 text-center items-center">
         <li className="hover: cursor-pointer hover:text-red-200">
-          <Link to="/Home">Home</Link>
+          <Link to="/"><Scrollchor to="#hero">Home</Scrollchor></Link>
         </li>
-        <li className="hover: cursor-pointer hover:text-red-200">A propos</li>
-        <li className="hover: cursor-pointer hover:text-red-200">Nos Services</li>
-        <li className="hover: cursor-pointer hover:text-red-200">Contact</li>
+        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#about">A propos</Scrollchor></li>
+        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#about">Nos Services</Scrollchor></li>
+        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#contact">Contact</Scrollchor></li>
 
         <li className="flex hover: cursor-pointer hover:text-red-200">
           <Link className="flex" to={"/login"}>
@@ -54,11 +56,9 @@ const Nav = () => {
           />
         </svg>
       </div>
+     
 
-      <Switch>
-        <Route path="/" />
-        <Route path="/login" component={Login} />
-      </Switch>
+
     </div>
   );
 };
