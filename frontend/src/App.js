@@ -7,6 +7,7 @@ import {
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Join from "./components/Join";
+import Map from "./components/Map";
 
 function App() {
   return (
@@ -69,26 +70,41 @@ function App() {
         <div className="flex flex-col text-center text-2xl font-bold bg-gray-400 p-5">
           <h1>Contactez Nous</h1>
         </div>
-        <form className="sm:p-4 flex flex-col w-1/2 mx-auto">
-          <div className="flex flex-col p-3">
-            <label className="p-1 font-bold" htmlFor="Name">Name:</label>
-            <input className="border-4 p-2 " type="text" />
-          </div>
-
-          <div className="flex p-3 flex-col">
-            <label className="p-1 font-bold" htmlFor="Email">Email:</label>
-            <input className="border-4 p-2" type="text" />
-          </div>
-
-          <div className="flex p-3 mb-3 flex-col">
-            <label className="p-1 font-bold" htmlFor="Message">Message:</label>
-            <textarea className="border-4 p-2" />
-          </div>
-            
-            <div className="mx-auto mb-4">
-              <input className="p-3 cursor-pointer" type="submit" name="Envoyer" />
+        <div className="flex flex-col sm:flex-row">
+          <form className="sm:p-4 flex flex-col w-1/2 mx-auto">
+            <div className="flex flex-col p-3">
+              <label className="p-1 font-bold" htmlFor="Name">
+                Name:
+              </label>
+              <input className="border-4 p-2 " type="text" />
             </div>
-        </form>
+
+            <div className="flex p-3 flex-col">
+              <label className="p-1 font-bold" htmlFor="Email">
+                Email:
+              </label>
+              <input className="border-4 p-2" type="text" />
+            </div>
+
+            <div className="flex p-3 mb-3 flex-col">
+              <label className="p-1 font-bold" htmlFor="Message">
+                Message:
+              </label>
+              <textarea className="border-4 p-2" />
+            </div>
+
+            <div className="mx-auto mb-4">
+              <input
+                className="p-3 cursor-pointer"
+                type="submit"
+                name="Envoyer"
+              />
+            </div>
+          </form>
+          <div className="flex-1 p-3">
+            <Map />
+          </div>
+        </div>
       </section>
 
       <Footer />
