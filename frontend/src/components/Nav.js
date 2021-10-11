@@ -1,24 +1,25 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { Scrollchor } from 'react-scrollchor';
-import Login from "../Pages/Login";
-import Home from '../Pages/Home'
+
+
+
 
 const Nav = () => {
   return (
     <div className="bg-gray-800 sticky z-10 top-0 p-4 flex justify-between text-white">
-      <h1 className="flex-1 font-cookie text-3xl">QuestPaper</h1>
+      <Scrollchor to="#hero"><Link exact to="/"><h1 className="flex-1 font-cookie text-3xl">QuestPaper</h1></Link></Scrollchor>
 
       <ul className="hidden sm:flex space-x-3 text-center items-center">
         <li className="hover: cursor-pointer hover:text-red-200">
-          <Link to="/"><Scrollchor to="#hero">Home</Scrollchor></Link>
+          <Scrollchor to="#hero"><Link to="/">Home</Link></Scrollchor>
         </li>
-        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#about">A propos</Scrollchor></li>
-        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#about">Nos Services</Scrollchor></li>
-        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#contact">Contact</Scrollchor></li>
+        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#about"><Link exact to="/">A propos</Link></Scrollchor></li>
+        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#about"><Link exact to="/">Nos Services</Link></Scrollchor></li>
+        <li className="hover: cursor-pointer hover:text-red-200"><Scrollchor to="#contact"><Link exact to="/">Contact</Link></Scrollchor></li>
 
         <li className="flex hover: cursor-pointer hover:text-red-200">
-          <Link className="flex" to={"/login"}>
+          <Link className="flex" exact to="/login">
             Se Connecter
             <div className="">
               <svg
