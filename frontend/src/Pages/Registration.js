@@ -15,23 +15,26 @@ const Registration = () => {
 const postData = async() =>{
    console.log(userData)
 
-
-   const name = userData.name;
-   const sirname = userData.sirname
-   const email = userData.email
-   const  password = userData.password
-   const confirmPassword = userData.pwdrepeat
-   const adresse = userData.adresse
-    axios.post('http://localhost:5000/api/inscrire',{
-      sirname: sirname,
-      name:name,
-      email:email,
-      password: password,
-      confirmPassword: confirmPassword,
-      adresse: adresse
-}).then(() =>{
-  alert("success")
-})
+if(userData){
+  const name = await userData.name;
+  const sirname = await userData.sirname
+  const email = await userData.email
+  const  password = await userData.password
+  const confirmPassword = await userData.pwdrepeat
+  const adresse = await userData.adresse
+  
+  
+  axios.post('http://localhost:5000/api/inscrire',{
+    sirname: sirname,
+    name:name,
+    email:email,
+    password: password,
+    confirmPassword: confirmPassword,
+    adresse: adresse
+  }).then(() =>{
+    alert("success")
+  })
+}
 }
 
 
