@@ -4,6 +4,9 @@ import {
     HiOutlineUserGroup,
     HiOutlineSun,
   } from "react-icons/hi";
+
+  import Typist from 'react-typist';
+
 import Map from '../components/Map'
 import Join from '../components/Join'
 
@@ -14,7 +17,8 @@ const Home = () => {
         <div id="hero" className="min-h-screen bg-hero-image bg-cover bg-opacity-10 bg-gray-600 text-white flex flex-col  text-center justify-center">
           {/* Hero section */}
           <h1 className="text-5xl p-2 font-bold">
-            Une Grande Selection De Sujets D'examen Gratuit
+            <Typist>Une Grande Sélection De Sujets D'examen Gratuit.</Typist>
+            
           </h1>
           <p className="p-3  font-bold text-lg">
             {}
@@ -32,7 +36,7 @@ const Home = () => {
       <section id="about" className="flex flex-col text-center">
         <h2 className="text-xl font-bold p-4 bg-gray-400">Nos Services</h2>
 
-        <div className="flex flex-col  sm:flex-row justify-around  p-4">
+        <div className="flex flex-col  sm:flex-row justify-around p-4 dark:bg-black dark:text-white">
           <div className="flex flex-col items-center p-4">
             <HiOutlineUserGroup className="text-5xl sm: none" />
             <p>
@@ -63,7 +67,7 @@ const Home = () => {
 
       {/* Contactez Nous */}
 
-      <section id="contact" className="flex flex-col">
+      <section id="contact" className="flex flex-col dark:bg-black dark:text-white">
         <div className="flex flex-col text-center text-2xl font-bold bg-gray-400 p-5">
           <h1>Contactez Nous</h1>
         </div>

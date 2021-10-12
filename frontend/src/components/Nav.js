@@ -1,4 +1,4 @@
-import React from "react";
+import React ,{useState} from "react";
 import { Link} from "react-router-dom";
 import { Scrollchor } from 'react-scrollchor';
 
@@ -6,11 +6,22 @@ import { Scrollchor } from 'react-scrollchor';
 
 
 const Nav = () => {
+const [click, setClick] = useState(false)
+
+
+const showSidenav = () =>{
+    setClick(!false)
+  
+}
+
+
+
+
   return (
     <div className="bg-gray-800 sticky z-10 top-0 p-4 flex justify-between text-white">
       <Scrollchor to="#hero"><Link exact to="/"><h1 className="flex-1 font-cookie text-3xl">QuestPaper</h1></Link></Scrollchor>
 
-      <ul className="hidden sm:flex space-x-3 text-center items-center">
+      <ul className={click ? "mobilenav sm:flex space-x-3 text-center items-center" : "hidden sm:flex space-x-3 text-center items-center"} >
         <li className="hover: cursor-pointer hover:text-red-200">
           <Scrollchor to="#hero"><Link to="/">Home</Link></Scrollchor>
         </li>
@@ -41,7 +52,7 @@ const Nav = () => {
         </li>
       </ul>
 
-      <div className="m-1 flex text-center items-center sm:hidden">
+      <div className="m-1 flex text-center items-center sm:hidden" onClick={showSidenav}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-6 w-6"
