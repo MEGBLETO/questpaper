@@ -12,9 +12,9 @@ const Map = () => {
   const [lat, setLat] = useState(49.0433946);
   const [zoom, setZoom] = useState(15);
 
-//   const marker1 = new mapboxgl.Marker()
-//   .setLngLat([lng, lat])
-//   .addTo(map);
+  // const marker1 = new mapboxgl.Marker()
+  // .setLngLat([lng, lat])
+  // .addTo(map);
 
 
 

@@ -16,7 +16,7 @@ const Home = () => {
             <div className="">
         <div id="hero" className="min-h-screen bg-hero-image bg-cover bg-opacity-10 bg-gray-600 text-white flex flex-col  text-center justify-center">
           {/* Hero section */}
-          <h1 className="text-5xl p-2 font-bold">
+          <h1 className="text-3xl sm:text-5xl p-2 font-bold">
             <Typist>Une Grande Sélection De Sujets D'examen Gratuit.</Typist>
             
           </h1>

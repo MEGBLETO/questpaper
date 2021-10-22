@@ -6,6 +6,7 @@ const cors = require('cors')
 
 
 
+
 //importing my routes
 const route = require('./routes/index')
 
@@ -14,6 +15,8 @@ const route = require('./routes/index')
 
  // parse application/json
 app.use(bodyParser.json())
+
+app.use(express.json())
 
  app.use(cors());
 

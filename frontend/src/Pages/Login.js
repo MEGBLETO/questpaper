@@ -1,23 +1,58 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+
 
 const Login = () => {
+  //getting login data through react hook forms and setting it using usestate
+  const [logindata, setLoginData] = useState()
+
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (data) => setLoginData(data);
+
+
+const postLoginData  = async() =>{
+const email = logindata.email;
+const password = logindata.password
+
+axios.post('http://localhost:5000/api/login',
+{
+  email: email , 
+  password: password
+}).then(() =>{
+  alert('The login was a success')
+}
+
+)
+} 
+
+
+
+useEffect(() => {
+  if(logindata){
+    postLoginData()
+  }
+
+}, [logindata])
+
+
   return (
     <div className="flex relative flex-col p-4 items-center min-h-screen dark:bg-black">
       <div className=" shadow-lg m-auto">
-        <form className="flex flex-col bg-white p-8 justify-center min-h-full ">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-white p-8 justify-center min-h-full ">
           <div className="flex flex-col ">
             <label className="font-bold p-2" htmlFor="email">
               Email:
             </label>
-            <input className="p-1 sm:p-2 border-2 w-full" type="email" name="email" />
+            <input className="p-1 sm:p-2 border-2 w-full" {...register("email")} type="email" name="email" />
           </div>
 
           <div className="flex flex-col ">
             <label className="font-bold p-2" htmlFor="password">
               Password:
             </label>
-            <input className="p-1 sm:p-2  border-2 w-full" type="password" name="pwd" />
+            <input className="p-1 sm:p-2  border-2 w-full"   {...register("password")}  type="password" name="password" />
           </div>
 
           <input
