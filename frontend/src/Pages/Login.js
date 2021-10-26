@@ -1,12 +1,23 @@
 import React, {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
 
 const Login = () => {
+//To implement the user redirection fonctionality
+
+let history = useHistory();
+
+
+
+
   //getting login data through react hook forms and setting it using usestate
   const [logindata, setLoginData] = useState()
+
+
+  //Dealing with the response i get back from the server after the login phase
+  const [message, setMessage] = useState("")
 
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setLoginData(data);
@@ -16,15 +27,18 @@ const postLoginData  = async() =>{
 const email = logindata.email;
 const password = logindata.password
 
-axios.post('http://localhost:5000/api/login',
+axios.post('http://localhost:5000/api/user/login',
 {
   email: email , 
   password: password
-}).then(() =>{
-  alert('The login was a success')
-}
-
-)
+}).then((response) =>{
+  if(response.status === 200){
+      history.push('/profile')
+  }
+}).catch((error) =>{
+  history.push('/login')
+  setMessage(error.response.data.message)
+})
 } 
 
 
@@ -40,19 +54,21 @@ useEffect(() => {
   return (
     <div className="flex relative flex-col p-4 items-center min-h-screen dark:bg-black">
       <div className=" shadow-lg m-auto">
+       <h1 className="text-red-800 text-center">{message}</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-white p-8 justify-center min-h-full ">
           <div className="flex flex-col ">
             <label className="font-bold p-2" htmlFor="email">
               Email:
             </label>
-            <input className="p-1 sm:p-2 border-2 w-full" {...register("email")} type="email" name="email" />
+            <input className="p-1 sm:p-2 border-2 w-full" {...register("email")} required type="email" name="email" />
           </div>
+
 
           <div className="flex flex-col ">
             <label className="font-bold p-2" htmlFor="password">
               Password:
             </label>
-            <input className="p-1 sm:p-2  border-2 w-full"   {...register("password")}  type="password" name="password" />
+            <input className="p-1 sm:p-2  border-2 w-full"   {...register("password")} required type="password" name="password" />
           </div>
 
           <input
