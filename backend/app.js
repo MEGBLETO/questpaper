@@ -4,7 +4,7 @@ const express = require('express')
 
 
 //fileupload package
-const fileUpload = require('express-fileupload');
+
 
 const cors = require('cors')
 
@@ -25,7 +25,7 @@ app.use(bodyParser.json())
 app.use(express.json())
 
  app.use(cors());
- app.use(fileUpload());
+
 
 
 
