@@ -25,8 +25,14 @@ const Upload = () => {
            .post("http://localhost:5000/api/user/upload", formData)
            .then((res) => console.log(res))
            .catch((err) => console.log(err));
-    }
+
+           await axios
+           .get("http://localhost:5000/api/user/download"
+           )
+           .then((res) => console.log(res))
+           .catch((err) => console.log(err))      
   };
+}
 
   useEffect(() => {
     try {

@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const multer = require('multer');
 
 
-
+const Downloader = require('nodejs-file-downloader');
 
 
 //destination de stockage des fichiers qui on ete uploader sur la plateforme
@@ -112,6 +112,34 @@ router.post("/upload", upload.single('subject') ,(req, res) => {
    res.send('The file has been uploaded !');
 });
 
+
+
+
+
+//user file download route
+router.get("/download", (req,res) =>{
+
+
+(async () => {//Wrapping the code with an async function, just for the sake of example.
+
+  const downloader = new Downloader({
+    url: 'http://subjects/fa808b59f210e4a6c76adb56b26f7fc2',//If the file name already exists, a new file with the name 200MB1.zip is created.     
+    directory: "./downloads",//This folder will be created, if it doesn't exist.               
+  })
+  try {
+    await downloader.download();//Downloader.download() returns a promise.
+
+    console.log('All done');
+  } catch (error) {//IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
+    //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
+    console.log('Download failed',error)
+  }
+
+
+})();    
+  
+ 
+})
 
 
 
