@@ -46,6 +46,22 @@ const Registration = () => {
   return (
     <div className="flex relative flex-col p-4 items-center min-h-screen  dark:bg-black">
       <div className="shadow-lg m-auto">
+      <div className="flex flex-col p-3 bg-gray-500 w-full text-center justify-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className=" w-1/4 text-white  self-center"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col  bg-white p-8 justify-center min-h-full "
