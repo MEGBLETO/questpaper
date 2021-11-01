@@ -3,19 +3,15 @@ const bodyParser = require("body-parser");
 const router = require("express").Router();
 var bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const multer = require('multer');
+const multer = require("multer");
 
-
-const Downloader = require('nodejs-file-downloader');
-
+const Downloader = require("nodejs-file-downloader");
 
 //destination de stockage des fichiers qui on ete uploader sur la plateforme
 
-const upload = multer({dest: './subjects/'})
-
+const upload = multer({ dest: "./subjects/" });
 
 const dbconn = require("../config");
-
 
 //Cette route permet d'inscrire un nouvel utillisateur on verifie dans un premier temps si il existe dans la base grace a son email ensuite on hash son mot de passe avant de l'inserer
 
@@ -85,7 +81,7 @@ router.post("/login", (req, res) => {
                 expiresIn: "1h",
               });
               console.log(token);
-              res.status(200).send({ message: "The password is correct !" });
+              res.status(200).send({token:token, message: "The password is correct !" });
             } else {
               res.status(401).send({ message: "The password is incorrect !" });
             }
@@ -100,61 +96,90 @@ router.post("/login", (req, res) => {
   );
 });
 
+// Verification du token que nous obtenons apres que l'utillisateur se soit inscrit sur la plateforme
+
+//Format de mon token
+//Authorization: Bearer <<accesss_token>>
+
+const verifyToken = (req, res, next) => {
+  const bearerHeader = req.headers["authorization"];
+
+  //check if bearer is not defined
+
+  if (typeof bearerHeader !== "undefined") {
+    console.log(bearerHeader);
+    //split at tthe space
+    const bearer = bearerHeader.split(" ");
+
+    //Get token from array
+    const bearerToken = bearer[1];
+
+    //set the token
+
+    req.token = bearerToken;
+    //next middleware
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+};
+
 //user file upload route
 
-router.post("/upload", upload.single('subject') ,(req, res) => {
-  //ici je recupere le fichier que jai renvoye de mon frontend
-  const {mimetype, destination, filename, path}= req.file;
-  const {domaine, year } = req.body;
-  //const name = req.body;
-  // console.log(path);
-  console.log(req.body);
-   res.send('The file has been uploaded !');
+router.post("/upload", verifyToken, upload.single("subject"), (req, res) => {
+  jwt.verify(req.token, "temp", (error, authData) => {
+    if (error) {
+      res.sendStatus(403);
+    } else {
+      //ici je recupere le fichier que jai renvoye de mon frontend
+      const { mimetype, destination, filename, path } = req.file;
+      const { domaine, year } = req.body;
+      //const name = req.body;
+      // console.log(path);
+      console.log(req.body);
+      res.send("The file has been uploaded !");
+    }
+  });
 });
 
-
-
-
-
 //user file download route
-router.get("/download", (req,res) =>{
+router.get("/download", (req, res) => {
+  (async () => {
+    //Wrapping the code with an async function, just for the sake of example.
 
+    const downloader = new Downloader({
+      url: "http://i.imgur.com/G9bDaPH.jpg", //If the file name already exists, a new file with the name 200MB1.zip is created.
+      directory: "./downloads", //This folder will be created, if it doesn't exist.
+    });
+    try {
+      await downloader.download(); //Downloader.download() returns a promise.
 
-(async () => {//Wrapping the code with an async function, just for the sake of example.
-
-  const downloader = new Downloader({
-    url: 'http://subjects/fa808b59f210e4a6c76adb56b26f7fc2',//If the file name already exists, a new file with the name 200MB1.zip is created.     
-    directory: "./downloads",//This folder will be created, if it doesn't exist.               
-  })
-  try {
-    await downloader.download();//Downloader.download() returns a promise.
-
-    console.log('All done');
-  } catch (error) {//IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
-    //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
-    console.log('Download failed',error)
-  }
-
-
-})();    
-  
- 
-})
-
-
-
+      console.log("All done");
+    } catch (error) {
+      //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
+      //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
+      console.log("Download failed", error);
+    }
+  })();
+});
 
 //get all the users
-router.get("/users", (req, res) => {
-  sql = `SELECT * FROM users`;
-
-  dbconn.query(sql, (error, result) => {
-    if (error) {
-      throw err;
+router.get("/users", verifyToken, (req, res) => {
+  jwt.verify(req.token, "temp", (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
     } else {
-      if (result.length > 0) {
-        res.send(result);
-      }
+      sql = `SELECT * FROM users`;
+
+      dbconn.query(sql, (error, result) => {
+        if (error) {
+          throw err;
+        } else {
+          if (result.length > 0) {
+            res.json({ authData: authData, result: result });
+          }
+        }
+      });
     }
   });
 });
