@@ -5,6 +5,7 @@ import './index.css';
 import { Provider } from 'react-redux'
 import loginReducer from './features/Login'
 import App from './App';
+import { BrowserRouter as Router} from "react-router-dom";
 
 //redux logic
 
@@ -20,9 +21,11 @@ const store = configureStore({
 
 ReactDOM.render(
   <React.StrictMode>
+    <Router>
     <Provider store={store}>
     <App />
   </Provider>
+  </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

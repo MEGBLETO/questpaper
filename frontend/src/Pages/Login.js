@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-
+import { useJwt } from "react-jwt";
 //importing my action for the situation
 
 import { situation } from "../features/Login";
@@ -24,10 +24,17 @@ const Login = () => {
 
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setLoginData(data);
+  
+  const [token, setToken]= useState();
+  const { decodedToken, isExpired } = useJwt(token);
+  
+  console.log(isExpired)
+
 
   const postLoginData = async () => {
     const email = logindata.email;
     const password = logindata.password;
+
 
     axios
       .post("http://localhost:5000/api/user/login", {
@@ -38,9 +45,9 @@ const Login = () => {
        let jwt = response.data.token;
        window.localStorage['jwtToken'] = jwt;
         if (response.status === 200) {
-          console.log(window.localStorage['jwtToken'])
+            setToken(window.localStorage['jwtToken']);
           dispatch(situation(true));
-          history.push("/profile");
+          history.push("/secondary");
         }
       })
       .catch((error) => {
