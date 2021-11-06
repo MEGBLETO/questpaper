@@ -11,16 +11,15 @@ const Viewer = ({Doc}) => {
     setNumPages(numPages);
   };
   return (
-      <div className="">
-    <div className="w-1/2 flex flex-col items-center p-3 bg-gray-400">
-      <Document className="justify-center p-1 w-2/3" file={Doc} onLoadSuccess={onDocumentLoadSuccess}>
-        <Page style={{ backgroundColor: 'tomato' }} pageNumber={pageNumber} />
+    <div className="relative flex flex-col items-center p-3  w-full overflow-hidden border-2 bg-gray-100 ">
+      <Document className="w-full justify-center p-1 " file={Doc} onLoadSuccess={onDocumentLoadSuccess}>
+        <Page  pageNumber={pageNumber} />
       </Document>
       <p>
         Page {pageNumber} of {numPages}
       </p>
     </div>
-      </div>
+
   );
 };
 

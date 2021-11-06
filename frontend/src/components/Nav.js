@@ -12,9 +12,13 @@ const Nav = () => {
 
   const [click, setClick] = useState(false);
 
+ 
   const showSidenav = () => {
-    setClick(!false);
+    (setClick(c => (!c)));
   };
+
+
+
   return (
     <div className="bg-gray-800 sticky z-10 top-0 p-4 flex justify-between text-white">
       <Scrollchor to="#hero">
@@ -68,13 +72,13 @@ const Nav = () => {
           </Scrollchor>
         </li>}
 
-        <li className="hover: cursor-pointer hover:text-red-200">
+       {!loginStatus && <li className="hover: cursor-pointer hover:text-red-200">
           <Scrollchor to="#contact">
             <Link exact to="/">
               Contact
             </Link>
           </Scrollchor>
-        </li>
+        </li> } 
 
         {!loginStatus &&  <li className="flex hover: cursor-pointer hover:text-red-200">
           <Link className="flex" exact to="/login">
@@ -120,9 +124,6 @@ const Nav = () => {
             </div>
           </Link>
         </li> }
-
-        {loginStatus && <div className="flex"><p>Bonjour Carnel Megbleto </p></div>}
-      
       </ul>
 
       <div

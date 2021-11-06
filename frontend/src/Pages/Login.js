@@ -28,7 +28,7 @@ const Login = () => {
   const [token, setToken]= useState();
   const { decodedToken, isExpired } = useJwt(token);
   
-  console.log(isExpired)
+  console.log(decodedToken)
 
 
   const postLoginData = async () => {
