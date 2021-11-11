@@ -4,8 +4,9 @@ const router = require("express").Router();
 var bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const fs = require('fs');
 
-const Downloader = require("nodejs-file-downloader");
+
 
 //destination de stockage des fichiers qui on ete uploader sur la plateforme
 
@@ -80,7 +81,7 @@ router.post("/login", (req, res) => {
               var token = jwt.sign({ auth: true, data: result[0] }, "temp", {
                 expiresIn: "1h",
               });
-              console.log(token);
+              //console.log(token);
               res.status(200).send({token:token, message: "The password is correct !" });
             } else {
               res.status(401).send({ message: "The password is incorrect !" });
@@ -107,7 +108,7 @@ const verifyToken = (req, res, next) => {
   //check if bearer is not defined
 
   if (typeof bearerHeader !== "undefined") {
-    console.log(bearerHeader);
+    //console.log(bearerHeader);
     //split at tthe space
     const bearer = bearerHeader.split(" ");
 
@@ -124,43 +125,62 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+
+
+router.post("/upload", upload.single("subject"), (req, res) => { 
+ 
+   
+      //ici je recupere le fichier que jai renvoye de mon frontend
+      const { mimetype, destination,size,filename, path } = req.file;
+      const { name,domaine, year } = req.body;
+
+
+      dbconn.query(
+        "INSERT INTO sujets (nom_sujet, nom_originel, path_sujet,sujet_taille, email_ajout) VALUES (?,?,?,?,?);",
+        [filename, name, path,size, name],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            throw err;
+          }})
+
+      
+      res.send("The file has been uploaded !");
+
+});
+
+
+
+
+
 //user file upload route
 
-router.post("/upload", verifyToken, upload.single("subject"), (req, res) => {
-  jwt.verify(req.token, "temp", (error, authData) => {
-    if (error) {
-      res.sendStatus(403);
-    } else {
-      //ici je recupere le fichier que jai renvoye de mon frontend
-      const { mimetype, destination, filename, path } = req.file;
-      const { domaine, year } = req.body;
-      //const name = req.body;
-      // console.log(path);
-      console.log(req.body);
-      res.send("The file has been uploaded !");
-    }
-  });
-});
+// router.post("/upload", verifyToken, upload.single("subject"), (req, res) => { 
+//   jwt.verify(req.token, "temp", (error, authData) => {
+//     if (error) {
+//       res.sendStatus(403);
+//     } else {
+//       console.log(authData);
+//       console.log(req.body);
+//       console.log(req.file)
+//       //ici je recupere le fichier que jai renvoye de mon frontend
+//       const { mimetype, destination, filename, path } = req.file;
+//       const { domaine, year } = req.body;
+
+//        console.log(req.body);
+//       // console.log(path);
+//       res.send("The file has been uploaded !");
+//     }
+//   });
+// });
+
+
 
 //user file download route
 router.get("/download", (req, res) => {
-  (async () => {
-    //Wrapping the code with an async function, just for the sake of example.
-
-    const downloader = new Downloader({
-      url: "http://i.imgur.com/G9bDaPH.jpg", //If the file name already exists, a new file with the name 200MB1.zip is created.
-      directory: "./downloads", //This folder will be created, if it doesn't exist.
-    });
-    try {
-      await downloader.download(); //Downloader.download() returns a promise.
-
-      console.log("All done");
-    } catch (error) {
-      //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
-      //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
-      console.log("Download failed", error);
-    }
-  })();
+    const file = fs.readFileSync('subjects/rib.pdf');
+    res.contentType("application/pdf");
+    res.send(file);
 });
 
 //get all the users

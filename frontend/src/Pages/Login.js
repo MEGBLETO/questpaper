@@ -24,17 +24,27 @@ const Login = () => {
 
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setLoginData(data);
-  
-  const [token, setToken]= useState();
+
+  const [token, setToken] = useState();
   const { decodedToken, isExpired } = useJwt(token);
-  
+
   console.log(decodedToken)
+
+  const loginUser = () =>{
+
+    if(window.localStorage["jwtToken"]){
+      history.push("/secondary");
+    }
+    else{
+      history.push("/login");
+    }
+  }
+
 
 
   const postLoginData = async () => {
-    const email = logindata.email;
-    const password = logindata.password;
-
+    const email = await logindata.email;
+    const password = await logindata.password;
 
     axios
       .post("http://localhost:5000/api/user/login", {
@@ -42,12 +52,14 @@ const Login = () => {
         password: password,
       })
       .then((response) => {
-       let jwt = response.data.token;
-       window.localStorage['jwtToken'] = jwt;
-        if (response.status === 200) {
-            setToken(window.localStorage['jwtToken']);
+        if (response) {
+          let jwt = response.data.token;
+          window.localStorage["jwtToken"] = jwt;
+          setToken(window.localStorage["jwtToken"]);
           dispatch(situation(true));
-          history.push("/secondary");
+         
+          loginUser()
+        
         }
       })
       .catch((error) => {

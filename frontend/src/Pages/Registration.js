@@ -33,7 +33,7 @@ const Registration = () => {
           year: year,
         })
         .then((response) => {
-          setMessage(response.data.message);
+          setMessage(response.data);
           console.log(response);
         });
     }
@@ -62,11 +62,11 @@ const Registration = () => {
           />
         </svg>
         </div>
+        <h1 className="text-red-800 text-center">{message}</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col  bg-white p-8 justify-center min-h-full "
         >
-          <h1>{message}</h1>
           <div className="flex flex-col ">
             <label className="font-bold p-2" htmlFor="adresse">
               Année d'etude:

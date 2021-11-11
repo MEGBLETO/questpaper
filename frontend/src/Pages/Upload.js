@@ -18,46 +18,37 @@ const Upload = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setDonneeForm(data);
 
-  const sendData = async (formData) => {
-
+  const sendData = (formData) => {
+    
     if(formData){
-        await axios
-           .post("http://localhost:5000/api/user/upload", formData)
-           .then((res) => console.log(res))
-           .catch((err) => console.log(err));
-
-           await axios
-           .get("http://localhost:5000/api/user/download"
-           )
-           .then((res) => console.log(res))
-           .catch((err) => console.log(err))      
-  };
-}
-
+    
+    };
+  }
+  
   useEffect(() => {
     try {
+      console.log(donneeform)
       if (donneeform) {
         setFile(donneeform.file[0]);
         setLevel(donneeform.year);
         setSpecialite(donneeform.specialite);
-
+        
         const formData = new FormData();
-
+        
         formData.append("name", filename);
         formData.append("subject", file);
         formData.append("year", level);
         formData.append("domaine", specialite);
-
-        sendData(formData);
+    
+        axios
+        .post("http://localhost:5000/api/user/upload", formData)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));  
       }
     } catch (error) {}
   }, [onSubmit]);
 
-  const getFile = (e) => {
-    setFilename(e.target.files[0].name);
 
-    setFile(e.target.files[0]);
-  };
 
   
 
@@ -113,7 +104,6 @@ const Upload = () => {
             accept=".pdf"
             name="subject"
             {...register("file")}
-            onChange={getFile}
           />
           <label htmlFor="filelabel">{filename}</label>
         </div>

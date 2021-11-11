@@ -1,9 +1,11 @@
 const bodyParser = require('body-parser')
 require('dotenv').config()
 const express = require('express')
+const cookieParser = require('cookie-parser')
 
 
 
+const app = express()
 
 
 
@@ -14,24 +16,22 @@ const express = require('express')
 const cors = require('cors')
 
 
+// parse application/json
+app.use(bodyParser.json())
+app.use(cookieParser())
+
+app.use(express.json())
+
+app.use(cors());
 
 
 //importing my routes
 const usersroute = require('./routes/usersroute')
 const adminsroute = require('./routes/adminsroute')
 const teachersroute = require('./routes/teachersroute')
-const cookieParser = require('cookie-parser')
 
 
- const app = express()
 
- // parse application/json
-app.use(bodyParser.json())
-app.use(cookieParser())
-
-app.use(express.json())
-
- app.use(cors());
 
 
 
