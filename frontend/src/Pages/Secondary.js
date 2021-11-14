@@ -1,9 +1,26 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import Doc from "../doc/formulaire.pdf";
 import Viewer from "../components/Viewer";
 import { Link } from "react-router-dom";
+import axios from 'axios'
 
 const Secondary = () => {
+
+ const[docs, setDoc]=useState([])
+
+const getdocs = async()=>{
+      const result = await axios.get('http://localhost:5000/api/user/files')
+        setDoc(result.data)
+ 
+}
+
+
+useEffect(()=>{
+  getdocs();
+},[])
+
+
+
   return (
     <div className="flex m-3 flex-col items-center  min-h-screen ">
       <div className="relative  w-full m-4 p-3">
@@ -28,18 +45,12 @@ const Secondary = () => {
       </div>
       <div className="relative  min-h-screen ">
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
-          <Viewer Doc={Doc} />
+
+          {docs.map(doc =>(
+            //console.log(doc.sujet_id)
+            <Viewer key={doc.sujet_id} Doc={'subjects/3f501498b8dcb2b315d0942aa6cfee60.pdf'} />
+          ))}
+       
         </div>
       </div>
     </div>

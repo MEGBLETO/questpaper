@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect} from "react";
+import { Link, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
+
+
+
+
 const Registration = () => {
   const [userData, setUserData] = useState();
-
+  
   const [message, setMessage] = useState("");
-
+  
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setUserData(data);
-
+  
+  let history = useHistory();
   
   
   const postData = async () => {
@@ -34,7 +39,9 @@ const Registration = () => {
         })
         .then((response) => {
           setMessage(response.data);
-          console.log(response);
+         if(response.status == 200){
+            history.push('/login')
+         }
         });
     }
   };

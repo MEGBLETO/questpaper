@@ -7,7 +7,7 @@ require('dotenv').config();
 //connection a ma base de donnee
 
 
-const dbconn = mysql.createConnection({
+const dbconn = mysql.createPool({
     host     :  process.env.DB_HOST,
     user     : process.env.DB_USER,
     password : process.env.DB_PWD,
@@ -16,12 +16,12 @@ const dbconn = mysql.createConnection({
 })
 
 
-dbconn.connect((err) =>{
-    if(err){
-        throw(err)
-    }
-    console.log('MySql connected...')
- });
+// dbconn.connect((err) =>{
+//     if(err){
+//         throw(err)
+//     }
+//     console.log('MySql connected...')
+//  });
   
 
 

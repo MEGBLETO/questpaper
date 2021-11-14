@@ -2,15 +2,17 @@ import React, { useRef, useEffect, useState } from "react";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoibmVsMTUiLCJhIjoiY2t0MXl5cDJoMGZhaDMwcjIwY3g2b2lyciJ9.9bOVK_BAblBO-j4E53qDRQ";
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
+ 
 
 const Map = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(2.0854041);
-  const [lat, setLat] = useState(49.0433946);
-  const [zoom, setZoom] = useState(15);
+  const [lng] = useState(2.0854041);
+  const [lat] = useState(49.0433946);
+  const [zoom] = useState(15);
+
+
 
   // const marker1 = new mapboxgl.Marker()
   // .setLngLat([lng, lat])

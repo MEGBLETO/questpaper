@@ -27,20 +27,20 @@ const Nav = () => {
         </Link>
       </Scrollchor>
 
-      <ul
+      <ul 
         className={
           click
             ? "mobilenav sm:flex space-x-3 text-center items-center"
             : "hidden sm:flex space-x-3 text-center items-center"
         }
       >
-        <li  onClick={showSidenav} className="hover: cursor-pointer hover:text-red-200">
+        <li   className="hover: cursor-pointer hover:text-red-200 ">
           <Scrollchor to="#hero">
             <Link to="/">Home</Link>
           </Scrollchor>
         </li>
 
-        {loginStatus &&  <li  onClick={showSidenav} className="hover: cursor-pointer hover:text-red-200">
+        {loginStatus &&  <li   className="hover: cursor-pointer hover:text-red-200">
           <Scrollchor to="#about">
             <Link exact to="/secondary">
               Chercher et Telecharger
@@ -48,7 +48,7 @@ const Nav = () => {
           </Scrollchor>
         </li> }
 
-        {!loginStatus &&  <li  onClick={showSidenav} className="hover: cursor-pointer hover:text-red-200">
+        {!loginStatus &&  <li  className={`hover: cursor-pointer hover:text-red-200`}>
           <Scrollchor to="#about">
             <Link exact to="/">
               A propos
@@ -56,7 +56,7 @@ const Nav = () => {
           </Scrollchor>
         </li> }
 
-        {loginStatus &&  <li   onClick={showSidenav} className="hover: cursor-pointer hover:text-red-200">
+        {loginStatus &&  <li  className="hover: cursor-pointer hover:text-red-200">
           <Scrollchor to="#about">
             <Link exact to="/profile">
               Profile
@@ -74,7 +74,7 @@ const Nav = () => {
           </Scrollchor>
         </li> }
 
-        {!loginStatus && <li   onClick={showSidenav} className="hover: cursor-pointer hover:text-red-200">
+        {!loginStatus && <li className="hover: cursor-pointer hover:text-red-200">
           <Scrollchor to="#about">
             <Link exact to="/">
               Nos Services
@@ -82,7 +82,7 @@ const Nav = () => {
           </Scrollchor>
         </li>}
 
-       {!loginStatus && <li  onClick={showSidenav} className="hover: cursor-pointer hover:text-red-200">
+       {!loginStatus && <li className="hover: cursor-pointer hover:text-red-200">
           <Scrollchor to="#contact">
             <Link exact to="/">
               Contact
@@ -90,7 +90,7 @@ const Nav = () => {
           </Scrollchor>
         </li> } 
 
-        {!loginStatus &&  <li  onClick={showSidenav}  className="flex hover: cursor-pointer hover:text-red-200">
+        {!loginStatus &&  <li    className="flex hover: cursor-pointer hover:text-red-200">
           <Link className="flex" exact to="/login">
             Se Connecter
             <div className="">
@@ -114,7 +114,7 @@ const Nav = () => {
 
 
         {loginStatus &&  <li className="flex hover: cursor-pointer hover:text-red-200">
-          <Link className="flex"  onClick={showSidenav} exact to="/login">
+          <Link className="flex"  exact to="/login">
             Se Deconnecter
             <div className="">
               <svg

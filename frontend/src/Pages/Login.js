@@ -28,7 +28,7 @@ const Login = () => {
   const [token, setToken] = useState();
   const { decodedToken, isExpired } = useJwt(token);
 
-  console.log(decodedToken)
+  //console.log(decodedToken)
 
   const loginUser = () =>{
 
@@ -53,6 +53,7 @@ const Login = () => {
       })
       .then((response) => {
         if (response) {
+          console.log(response)
           let jwt = response.data.token;
           window.localStorage["jwtToken"] = jwt;
           setToken(window.localStorage["jwtToken"]);

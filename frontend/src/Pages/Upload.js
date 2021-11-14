@@ -5,7 +5,20 @@ import { useForm } from "react-hook-form";
 const Upload = () => {
   const [donneeform, setDonneeForm] = useState([]);
 
-  const [filename, setFilename] = useState();
+  const [filename, setFilename] = useState('..');
+
+
+
+
+  const handleChange = e =>{
+    var files = e.target.files[0];
+
+    //console.log(files)
+    var filesArray = [].slice.call(files);
+    filesArray.forEach(e => {
+      console.log(e.name);
+    });
+  }
 
   //file data to be appended
   const [file, setFile] = useState();
@@ -18,16 +31,21 @@ const Upload = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setDonneeForm(data);
 
-  const sendData = (formData) => {
+  const sendData = async(formData) => {
     
-    if(formData){
-    
-    };
+  try {
+    await axios
+    .post("http://localhost:5000/api/user/upload", formData)
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));  
+  } catch (error) {
+    console.log(error)
+  }
   }
   
-  useEffect(() => {
+  useEffect(async() => {
     try {
-      console.log(donneeform)
+           await donneeform
       if (donneeform) {
         setFile(donneeform.file[0]);
         setLevel(donneeform.year);
@@ -39,13 +57,12 @@ const Upload = () => {
         formData.append("subject", file);
         formData.append("year", level);
         formData.append("domaine", specialite);
-    
-        axios
-        .post("http://localhost:5000/api/user/upload", formData)
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));  
+
+       sendData(formData)
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   }, [onSubmit]);
 
 
@@ -99,6 +116,7 @@ const Upload = () => {
 
         <div className="relative h-2/6 flex flex-col ">
           <input
+          onChange={e => handleChange(e)}
             className="p-2 shadow-lg cursor-pointer h-5/6 text-white border-2 border-dotted border-gray-300"
             type="file"
             accept=".pdf"
