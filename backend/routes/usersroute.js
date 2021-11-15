@@ -12,6 +12,11 @@ var once = require('once')
 //destination de stockage des fichiers qui on ete uploader sur la plateforme
 
 
+//s3
+
+const {uploadFile}= require('../s3')
+
+
 
 const dbconn = require("../config");
 
@@ -255,6 +260,11 @@ router.post("/upload", upload.single('subject'),async(req, res) => {
   const { mimetype,originalname, destination, size, filename, path } = await req.file;
   const { name, domaine, year } = await req.body;
   //res.send({ filename, path }, { message: "The file has been uploaded !" });
+const file = req.file;
+
+const result = await uploadFile(file)
+
+console.log(result)
 
   await dbconn.query(
     "INSERT INTO sujets (nom_sujet, nom_originel, path_sujet, sujet_taille, email_ajout) VALUES (?,?,?,?,?);",

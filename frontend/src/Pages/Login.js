@@ -65,7 +65,7 @@ const Login = () => {
       })
       .catch((error) => {
         history.push("/login");
-        setMessage(error.response.data.message);
+        //setMessage(error.response.data.message);
       });
   };
 
