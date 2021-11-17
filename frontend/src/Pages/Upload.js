@@ -5,20 +5,13 @@ import { useForm } from "react-hook-form";
 const Upload = () => {
   const [donneeform, setDonneeForm] = useState([]);
 
+  const [upconfirm, setupConfirm] = useState()
+
   const [filename, setFilename] = useState('..');
 
 
 
 
-  const handleChange = e =>{
-    var files = e.target.files[0];
-
-    //console.log(files)
-    var filesArray = [].slice.call(files);
-    filesArray.forEach(e => {
-      console.log(e.name);
-    });
-  }
 
   //file data to be appended
   const [file, setFile] = useState();
@@ -31,39 +24,41 @@ const Upload = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setDonneeForm(data);
 
+  
+
   const sendData = async(formData) => {
-    
+
   try {
     await axios
     .post("http://localhost:5000/api/user/upload", formData)
-    .then((res) => console.log(res))
+    .then((res) => setupConfirm(res.data.message))
     .catch((err) => console.log(err));  
   } catch (error) {
     console.log(error)
   }
   }
   
-  useEffect(async() => {
+  useEffect(() => {
     try {
-           await donneeform
-      if (donneeform) {
+      
         setFile(donneeform.file[0]);
         setLevel(donneeform.year);
         setSpecialite(donneeform.specialite);
         
         const formData = new FormData();
         
-        formData.append("name", filename);
+        // f//ormData.append("name", filename);
         formData.append("subject", file);
         formData.append("year", level);
         formData.append("domaine", specialite);
 
        sendData(formData)
-      }
+    
+    
     } catch (error) {
       console.log(error)
     }
-  }, [onSubmit]);
+  }, [donneeform]);
 
 
 
@@ -74,8 +69,10 @@ const Upload = () => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className=" h-full p-2 flex flex-col justify-evenly"
-        //onSubmit={submitForm}
+      
       >
+
+        <p className="text-green-800 text-xl">{upconfirm}</p>
         <div className="flex flex-col ">
           <label htmlFor="level">Niveau d'étude:</label>
           <select
@@ -116,7 +113,6 @@ const Upload = () => {
 
         <div className="relative h-2/6 flex flex-col ">
           <input
-          onChange={e => handleChange(e)}
             className="p-2 shadow-lg cursor-pointer h-5/6 text-white border-2 border-dotted border-gray-300"
             type="file"
             accept=".pdf"

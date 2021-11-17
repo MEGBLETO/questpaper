@@ -8,15 +8,12 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-var once = require('once')
+var once = require("once");
 //destination de stockage des fichiers qui on ete uploader sur la plateforme
-
 
 //s3
 
-const {uploadFile}= require('../s3')
-
-
+const { uploadFile } = require("../s3");
 
 const dbconn = require("../config");
 
@@ -237,55 +234,48 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-
 // --------------------------------------------------
 
-
 var storage = multer.diskStorage({
-  destination: async(req, file, cb)=> {
-    await cb(null, './subjects/')
+  destination: async (req, file, cb) => {
+    await cb(null, "./subjects/");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '.pdf') //Appending .jpg
-  }
-})
+    cb(null, Date.now() + ".pdf"); //Appending .jpg
+  },
+});
 
 var upload = multer({ storage: storage });
 
-
-router.post("/upload", upload.single('subject'),async(req, res) => {
-  console.log(req.file)
- try {
+router.post("/upload", upload.single("subject"), async (req, res) => {
+  console.log(req.file);
+  try {
     //ici je recupere le fichier que jai renvoye de mon frontend
-  const { mimetype,originalname, destination, size, filename, path } = await req.file;
-  const { name, domaine, year } = await req.body;
-  //res.send({ filename, path }, { message: "The file has been uploaded !" });
-const file = req.file;
+    const {originalname, destination, size, filename, path } =
+      await req.file;
+    const { name, domaine, year } = await req.body;
+    //res.send({ filename, path }, { message: "The file has been uploaded !" });
+    const file = req.file;
 
-const result = await uploadFile(file)
+    const result = await uploadFile(file);
 
-console.log(result)
+    console.log(result);
 
-  await dbconn.query(
-    "INSERT INTO sujets (nom_sujet, nom_originel, path_sujet, sujet_taille, email_ajout) VALUES (?,?,?,?,?);",
-    [filename, originalname, path, size,filename],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        throw err;
+    await dbconn.query(
+      "INSERT INTO sujets (nom_sujet, nom_originel, path_sujet, sujet_taille, email_ajout) VALUES (?,?,?,?,?);",
+      [filename, originalname, path, size, filename],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
       }
-    }
-  );
- } catch (error) {
-   console.log(error)
- }
-
+    );
+    res.send({ "message": "Le fichier a bien été uploader"});
+  } catch (error) {
+    console.log(error);
+  }
 });
-
-
-
-
-
 
 //verifyToken
 
@@ -300,8 +290,6 @@ router.get("/files", (req, res) => {
     }
   });
 });
-
-
 
 //user file download route
 router.get("/download", (req, res) => {
