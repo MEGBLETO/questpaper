@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Scrollchor } from "react-scrollchor";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Nav = () => {
 
@@ -17,6 +18,10 @@ const Nav = () => {
     (setClick(c => (!c)));
   };
 
+
+  const logOut = () =>{
+    axios.get("http://localhost:5000/api/user/logout").then((response)=>console.log(response))
+  }
 
 
   return (
@@ -90,7 +95,7 @@ const Nav = () => {
           </Scrollchor>
         </li> } 
 
-        {!loginStatus &&  <li    className="flex hover: cursor-pointer hover:text-red-200">
+        {!loginStatus &&  <li    className="flex hover: cursor-point ser hover:text-red-200">
           <Link className="flex" exact to="/login">
             Se Connecter
             <div className="">
@@ -113,8 +118,7 @@ const Nav = () => {
         </li> }
 
 
-        {loginStatus &&  <li className="flex hover: cursor-pointer hover:text-red-200">
-          <Link className="flex"  exact to="/login">
+        {loginStatus &&  <li onClick={logOut} className="flex hover: cursor-pointer hover:text-red-200">
             Se Deconnecter
             <div className="">
               <svg
@@ -132,7 +136,6 @@ const Nav = () => {
                 />
               </svg>
             </div>
-          </Link>
         </li> }
       </ul>
 

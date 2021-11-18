@@ -1,17 +1,19 @@
+import { Link, useHistory, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { useJwt } from "react-jwt";
+import Cookies from 'js-cookie'
+
 //importing my action for the situation
 
 import { situation } from "../features/Login";
 
 const Login = () => {
+
   //using usedispath to dispatch an action when my user will log in
   const dispatch = useDispatch();
-
+  const { state } = useLocation();
   //To implement the user redirection fonctionality
 
   let history = useHistory();
@@ -25,55 +27,67 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setLoginData(data);
 
-  const [token, setToken] = useState();
-  const { decodedToken, isExpired } = useJwt(token);
+
 
   //console.log(decodedToken)
 
   const loginUser = () =>{
+     const loggedIn = Cookies.get("loggedIn")
 
-    if(window.localStorage["jwtToken"]){
-      history.push("/secondary");
-    }
-    else{
-      history.push("/login");
-    }
+     if(loggedIn){
+      
+      
+     }
+   
+  }
+
+  //https://questpaper.herokuapp.com/api/user/login
+
+  const postLoginData = async () => {
+try {
+  const email = await logindata.email;
+  const password = await logindata.password;
+
+  axios
+    .post("http://localhost:5000/api/user/login", {
+      email: email,
+      password: password,
+    })
+    .then((response) => {
+      if (response.data.serverRes === "success") {
+        dispatch(situation(true));
+        Cookies.set('loggedIn', 'true')
+        history.push('/secondary')
+      localStorage.setItem('token', response.data.token)
+      }else{
+           setMessage(response.data.message)
+           history.push('/login')
+        
+      }
+    
+  
+});
+
+} catch (error) {
+  console.log(error)
+}
   }
 
 
 
-  const postLoginData = async () => {
-    const email = await logindata.email;
-    const password = await logindata.password;
-
-    axios
-      .post("http://localhost:5000/api/user/login", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        if (response) {
-          console.log(response)
-          let jwt = response.data.token;
-          window.localStorage["jwtToken"] = jwt;
-          setToken(window.localStorage["jwtToken"]);
-          dispatch(situation(true));
-         
-          loginUser()
-        
-        }
-      })
-      .catch((error) => {
-        history.push("/login");
-        //setMessage(error.response.data.message);
-      });
-  };
 
   useEffect(() => {
     if (logindata) {
       postLoginData();
     }
   }, [logindata]);
+
+
+
+
+  useEffect(() =>{
+         loginUser()
+  },[])
 
   return (
     <div className="flex relative flex-col p-4 items-center min-h-screen dark:bg-black">

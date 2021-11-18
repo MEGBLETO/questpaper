@@ -7,8 +7,6 @@ import Offers from "./Pages/Offers";
 import CookieConsent from "react-cookie-consent";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useSelector } from "react-redux";
-
-
 import {Route, Switch } from "react-router-dom";
 
 import Nav from "./components/Nav";

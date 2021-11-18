@@ -176,6 +176,7 @@ router.post("/login", async (req, res) => {
                       resultat[0].user_verif === 1
                     ) {
                       res.status(200).send({
+                        serverRes: "success",
                         token: token,
                         message: "The password is correct !",
                       });
@@ -241,37 +242,38 @@ var storage = multer.diskStorage({
     await cb(null, "./subjects/");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + ".pdf"); //Appending .jpg
+    cb(null, Date.now() + ".pdf");
   },
 });
 
 var upload = multer({ storage: storage });
 
 router.post("/upload", upload.single("subject"), async (req, res) => {
-  console.log(req.file);
+
+  const file = await req.file
   try {
-    //ici je recupere le fichier que jai renvoye de mon frontend
-    const {originalname, destination, size, filename, path } =
-      await req.file;
-    const { name, domaine, year } = await req.body;
-    //res.send({ filename, path }, { message: "The file has been uploaded !" });
-    const file = req.file;
 
-    const result = await uploadFile(file);
-
-    console.log(result);
-
-    await dbconn.query(
-      "INSERT INTO sujets (nom_sujet, nom_originel, path_sujet, sujet_taille, email_ajout) VALUES (?,?,?,?,?);",
-      [filename, originalname, path, size, filename],
-      (err, result) => {
-        if (err) {
-          console.log(err);
-          throw err;
+    if(file){
+ //ici je recupere le fichier que jai renvoye de mon frontend
+      const { originalname, destination, size, filename, path } = await req.file;
+      const { name, domaine, year, user_email } = req.body;
+    
+      const result = uploadFile(file);
+  
+      console.log(await result);
+  
+      await dbconn.query(
+        "INSERT INTO sujets (nom_sujet, nom_originel,domaine_sujet,level_sujet, path_sujet, sujet_taille, email_ajout) VALUES (?,?,?,?,?,?,?);",
+        [filename, originalname, domaine, year, path, size, user_email],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
         }
-      }
-    );
-    res.send({ "message": "Le fichier a bien été uploader"});
+      );
+      res.send({ "message": "Le fichier a bien été uploader" });
+    }    
   } catch (error) {
     console.log(error);
   }

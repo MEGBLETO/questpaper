@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useJwt } from "react-jwt";
 
 const Upload = () => {
   const [donneeform, setDonneeForm] = useState([]);
@@ -25,6 +26,11 @@ const Upload = () => {
   const onSubmit = (data) => setDonneeForm(data);
 
   
+  const [tokenvalue, setToken] = useState();
+  const { decodedToken, isExpired } = useJwt(tokenvalue);
+
+
+
 
   const sendData = async(formData) => {
 
@@ -33,27 +39,37 @@ const Upload = () => {
     .post("http://localhost:5000/api/user/upload", formData)
     .then((res) => setupConfirm(res.data.message))
     .catch((err) => console.log(err));  
+     //setFile(null)
   } catch (error) {
     console.log(error)
   }
   }
   
-  useEffect(() => {
+  useEffect(async() => {
     try {
-      
-        setFile(donneeform.file[0]);
+     if(donneeform){
+        const {user_email, user_name, user_sirname} = await (decodedToken.data)
+     console.log(donneeform.file[0])
+       setFilename(donneeform.file[0].name)
+         setFile(donneeform.file[0]);
         setLevel(donneeform.year);
-        setSpecialite(donneeform.specialite);
+         setSpecialite(donneeform.specialite);
         
         const formData = new FormData();
         
-        // f//ormData.append("name", filename);
-        formData.append("subject", file);
-        formData.append("year", level);
-        formData.append("domaine", specialite);
+         formData.append("name", filename);
+        
+         formData.append("user_email", user_email)
+         
+         formData.append("subject", file);
+         
+         formData.append("year", level);
+         
+          formData.append("domaine", specialite);
 
        sendData(formData)
     
+     }
     
     } catch (error) {
       console.log(error)
@@ -61,7 +77,10 @@ const Upload = () => {
   }, [donneeform]);
 
 
-
+useEffect(() =>{
+  const token  = localStorage.getItem('token')
+    setToken(token)
+},[])
   
 
   return (
@@ -124,7 +143,7 @@ const Upload = () => {
 
         <input
           className="p-3 cursor-pointer  m-3 hover:bg-gray-400"
-          type="submit"
+          type="submit" 
           value="Upload"
         />
       </form>
