@@ -235,7 +235,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// --------------------------------------------------
+// ---------------file upload-----------------------------------
 
 var storage = multer.diskStorage({
   destination: async (req, file, cb) => {
@@ -281,17 +281,20 @@ router.post("/upload", upload.single("subject"), async (req, res) => {
 
 //verifyToken
 
+//files fetching from amazon s3
 router.get("/files", (req, res) => {
-  dbconn.query("SELECT path_sujet, sujet_id FROM sujets", (error, result) => {
+  dbconn.query("SELECT nom_sujet, sujet_id FROM sujets", (error, result) => {
     if (error) {
       throw error;
     } else if (result.length > 0) {
-      console.log(result.path_sujet);
-      // const readstream = fs.createReadStream(path.join(__dirname, './subjects'))
-      //  readstream.pipe(res)
+        res.send(result)
     }
   });
 });
+
+
+
+
 
 //user file download route
 router.get("/download", (req, res) => {

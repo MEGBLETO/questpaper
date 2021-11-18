@@ -10,6 +10,7 @@ const Secondary = () => {
 
 const getdocs = async()=>{
       const result = await axios.get('http://localhost:5000/api/user/files')
+        console.log(result.data)
         setDoc(result.data)
  
 }
@@ -19,7 +20,7 @@ useEffect(()=>{
   getdocs();
 },[])
 
-
+const data = '1637269791930.pdf'
 
   return (
     <div className="flex m-3 flex-col items-center  min-h-screen ">
@@ -45,10 +46,10 @@ useEffect(()=>{
       </div>
       <div className="relative  min-h-screen ">
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
-
+    
           {docs.map(doc =>(
             //console.log(doc.sujet_id)
-            <Viewer key={doc.sujet_id} Doc={'subjects/3f501498b8dcb2b315d0942aa6cfee60.pdf'} />
+            <Viewer key={doc.sujet_id} Doc={`https://questpaper-subjects.s3.eu-west-3.amazonaws.com/${doc.nom_sujet}`} />
           ))}
        
         </div>

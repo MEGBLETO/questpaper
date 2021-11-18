@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
+
 const Viewer = ({ Doc }) => {
   //console.log(Doc);
   const [numPages, setNumPages] = useState(null);
@@ -24,9 +25,11 @@ const Viewer = ({ Doc }) => {
     setPageNumber(1);
   };
 
+
   return (
     <div className="relative flex flex-col items-center p-3  w-full overflow-hidden border-2 bg-gray-100 ">
-      <svg
+      <a href={Doc}> 
+      <svg 
         xmlns="http://www.w3.org/2000/svg"
         className="h-6 w-6 cursor-pointer hover:cursor-pointer hover:text-green-500 m-2"
         fill="none"
@@ -40,6 +43,7 @@ const Viewer = ({ Doc }) => {
           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
         />
       </svg>
+      </a>
       <Document
         className="w-full justify-center p-1 "
         file={Doc}
