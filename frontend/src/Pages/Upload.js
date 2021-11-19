@@ -6,13 +6,9 @@ import { useJwt } from "react-jwt";
 const Upload = () => {
   const [donneeform, setDonneeForm] = useState([]);
 
-  const [upconfirm, setupConfirm] = useState()
+  const [upconfirm, setupConfirm] = useState();
 
-  const [filename, setFilename] = useState('..');
-
-
-
-
+  const [filename, setFilename] = useState("..");
 
   //file data to be appended
   const [file, setFile] = useState();
@@ -25,72 +21,82 @@ const Upload = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setDonneeForm(data);
 
-  
   const [tokenvalue, setToken] = useState();
   const { decodedToken, isExpired } = useJwt(tokenvalue);
 
+  const [uploadPercentage, setUploadPercentage] = useState(0);
+  const [updata, setUpdata]= useState('');
 
-
-
-  const sendData = async(formData) => {
-
-  try {
-    await axios
-    .post("http://localhost:5000/api/user/upload", formData)
-    .then((res) => setupConfirm(res.data.message))
-    .catch((err) => console.log(err));  
-     //setFile(null)
-  } catch (error) {
-    console.log(error)
-  }
-  }
-  
-  useEffect(async() => {
+  const sendData = async (formData) => {
     try {
-     if(donneeform){
-        const {user_email, user_name, user_sirname} = await (decodedToken.data)
-     console.log(donneeform.file[0])
-       setFilename(donneeform.file[0].name)
-         setFile(donneeform.file[0]);
-        setLevel(donneeform.year);
-         setSpecialite(donneeform.specialite);
-        
-        const formData = new FormData();
-        
-         formData.append("name", filename);
-        
-         formData.append("user_email", user_email)
-         
-         formData.append("subject", file);
-         
-         formData.append("year", level);
-         
-          formData.append("domaine", specialite);
-
-       sendData(formData)
-    
-     }
-    
+      const options = {
+        onUploadProgress: (ProgressEvent) => {
+          const { loaded, total } = ProgressEvent;
+          let percent = Math.floor((loaded * 100) / total);
+          setUpdata(`${loaded}kb of ${total}kb| ${percent}`);
+          if (percent < 100) {
+            setUploadPercentage(percent);
+          }
+        },
+      };
+      https://questpaper.herokuapp.com/api/user/upload
+ 
+      await axios
+        .post("http://localhost:5000/api/user/upload", formData, options)
+        .then((res) => setupConfirm(res.data.message))
+        .catch((err) => console.log(err));
+      setUploadPercentage(100, () => {
+        setTimeout(() => {
+          setUploadPercentage(0);
+        }, 1000);
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
+    }
+  };
+
+  console.log(uploadPercentage);
+
+  useEffect(async () => {
+    try {
+      if (donneeform) {
+        const { user_email, user_name, user_sirname } = await decodedToken.data;
+        console.log(donneeform.file[0]);
+        setFilename(donneeform.file[0].name);
+        setFile(donneeform.file[0]);
+        setLevel(donneeform.year);
+        setSpecialite(donneeform.specialite);
+
+        const formData = new FormData();
+
+        formData.append("name", filename);
+
+        formData.append("user_email", user_email);
+
+        formData.append("subject", file);
+
+        formData.append("year", level);
+
+        formData.append("domaine", specialite);
+
+        sendData(formData);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }, [donneeform]);
 
-
-useEffect(() =>{
-  const token  = localStorage.getItem('token')
-    setToken(token)
-},[])
-  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setToken(token);
+  }, []);
 
   return (
     <div className="h-screen p-4 lg:w-1/2 mx-auto">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className=" h-full p-2 flex flex-col justify-evenly"
-      
       >
-
         <p className="text-green-800 text-xl">{upconfirm}</p>
         <div className="flex flex-col ">
           <label htmlFor="level">Niveau d'étude:</label>
@@ -140,10 +146,26 @@ useEffect(() =>{
           />
           <label htmlFor="filelabel">{filename}</label>
         </div>
-
+        {/* progress bar */}
+        <div className="relative pt-1">
+          <div className="flex mb-2 items-center justify-between">
+            <div className="text-right">
+              <span className="text-xs font-semibold inline-block text-gray-800">
+                {uploadPercentage}%
+              </span>
+            </div>
+          </div>
+          <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-300">
+            <div
+              style={{ width: `${uploadPercentage}%`}}
+              className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gray-800"
+            ></div>
+          </div>
+          {updata}
+        </div>
         <input
-          className="p-3 cursor-pointer  m-3 hover:bg-gray-400"
-          type="submit" 
+          className="p-3 cursor-pointer bg-gray-200 m-3 hover:bg-gray-600"
+          type="submit"
           value="Upload"
         />
       </form>
