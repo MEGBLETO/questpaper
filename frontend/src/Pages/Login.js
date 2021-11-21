@@ -11,12 +11,12 @@ import { situation } from "../features/Login";
 
 const Login = () => {
 
-  //using usedispath to dispatch an action when my user will log in
-  const dispatch = useDispatch();
   const { state } = useLocation();
   //To implement the user redirection fonctionality
 
   let history = useHistory();
+
+  const dispatch = useDispatch();
 
   //getting login data through react hook forms and setting it using usestate
   const [logindata, setLoginData] = useState();
@@ -27,19 +27,6 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setLoginData(data);
 
-
-
-  //console.log(decodedToken)
-
-  const loginUser = () =>{
-     const loggedIn = Cookies.get("loggedIn")
-
-     if(loggedIn){
-      
-      
-     }
-   
-  }
 
   //https://questpaper.herokuapp.com/api/user/login
 
@@ -56,9 +43,9 @@ try {
     .then((response) => {
       if (response.data.serverRes === "success") {
         dispatch(situation(true));
+        localStorage.setItem('token', response.data.token)
         Cookies.set('loggedIn', 'true')
         history.push('/secondary')
-      localStorage.setItem('token', response.data.token)
       }else{
            setMessage(response.data.message)
            history.push('/login')
@@ -83,11 +70,6 @@ try {
   }, [logindata]);
 
 
-
-
-  useEffect(() =>{
-         loginUser()
-  },[])
 
   return (
     <div className="flex relative flex-col p-4 items-center min-h-screen dark:bg-black">

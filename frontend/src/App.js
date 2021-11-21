@@ -1,3 +1,4 @@
+import React,{useEffect} from 'react'
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
 import Registration from "./Pages/Registration";
@@ -7,17 +8,35 @@ import Offers from "./Pages/Offers";
 import CookieConsent from "react-cookie-consent";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useSelector } from "react-redux";
-import {Route, Switch } from "react-router-dom";
-
+import {Route, Switch, useHistory,useLocation } from "react-router-dom";
+import { situation } from "../src/features/Login";
+import { useDispatch } from "react-redux";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Secondary from "./Pages/Secondary";
 
 function App() {
-
-
   const loginStatus = useSelector((state) => state.login.value)
   console.log(loginStatus)
+
+  const dispatch = useDispatch();
+  let history = useHistory();
+
+  const location = useLocation();
+  
+  
+  useEffect(() => {
+  const token =  localStorage.getItem('token');
+  if(token){
+    dispatch(situation(true));
+    history.push(location.pathname)
+  }else{
+    dispatch(situation(false));
+  }
+}, [])
+
+
+
   return (
     <>
     <Nav/>

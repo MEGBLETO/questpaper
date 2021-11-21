@@ -24,6 +24,7 @@ var transporter = nodemailer.createTransport({
     user: "questpaper2021@gmail.com",
     pass: process.env.EMAIL_PWD,
   },
+  logger: true,
   tls: {
     rejectUnauthorized: false,
   },

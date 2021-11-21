@@ -20,7 +20,8 @@ const Nav = () => {
 
 
   const logOut = () =>{
-    axios.get("http://localhost:5000/api/user/logout").then((response)=>console.log(response))
+    window.localStorage.clear();
+    window.location.href = '/';
   }
 
 
