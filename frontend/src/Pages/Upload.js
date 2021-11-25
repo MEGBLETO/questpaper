@@ -1,9 +1,15 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import { useForm } from "react-hook-form";
 import { useJwt } from "react-jwt";
 
 const Upload = () => {
+
+  let history = useHistory()
+
+
+
   const [donneeform, setDonneeForm] = useState([]);
 
   const [upconfirm, setupConfirm] = useState();
@@ -18,8 +24,12 @@ const Upload = () => {
   const [specialite, setSpecialite] = useState();
   const [level, setLevel] = useState();
 
-  const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => setDonneeForm(data);
+  const { register, handleSubmit , reset} = useForm();
+  const onSubmit = (data) => {
+    setDonneeForm(data)
+    
+    //reset();
+  };
 
   const [tokenvalue, setToken] = useState();
   const { decodedToken, isExpired } = useJwt(tokenvalue);
@@ -36,6 +46,8 @@ const Upload = () => {
           setUpdata(`${loaded}kb of ${total}kb| ${percent}`);
           if (percent < 100) {
             setUploadPercentage(percent);
+          }else if(percent = 100){
+            //history.push('/secondary');
           }
         },
       };
@@ -43,7 +55,7 @@ const Upload = () => {
  
       await axios
         .post("http://localhost:5000/api/user/upload", formData, options)
-        .then((res) => setupConfirm(res.data.message))
+        .then((res) => setupConfirm(res.data.message), reset)
         .catch((err) => console.log(err));
       setUploadPercentage(100, () => {
         setTimeout(() => {
@@ -105,6 +117,7 @@ const Upload = () => {
             className="p-2  bg-gray-500 text-white"
             id="year"
             name="year"
+            required
           >
             <option value="none" selected disabled hidden>
               Renseignez une année d'étude
@@ -124,6 +137,7 @@ const Upload = () => {
             className="p-2 bg-gray-500 text-white"
             id="specialite"
             name="specialite"
+            required
           >
             <option value="none" selected disabled hidden>
               Renseignez une specialité
@@ -143,6 +157,7 @@ const Upload = () => {
             accept=".pdf"
             name="subject"
             {...register("file")}
+            required
           />
           <label htmlFor="filelabel">{filename}</label>
         </div>

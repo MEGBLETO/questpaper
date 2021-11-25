@@ -1,23 +1,19 @@
 import React,{useState, useEffect} from 'react'
-import { decodeToken } from 'react-jwt'
 
 
 
 
-const Prodata = (decodedToken) => {
 
-    console.log(decodedToken)
+const Prodata = ({mydecodedtoken}) => {
+
+
 
     const [data, setdata]=  useState()
 
-
-useEffect(async() => {
-
-    if(decodeToken){
-        await setdata(decodeToken)
-         console.log(data)
-    }
-}, [])
+    
+    useEffect(async() => {
+  console.log(mydecodedtoken)
+    }, [])
 
     return (
         <div className="h-screen flex flex-col p-4">
