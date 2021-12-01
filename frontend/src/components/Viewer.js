@@ -5,7 +5,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 
 
-const Viewer = ({ Doc }) => {
+const Viewer = ({ Doc, id }) => {
   //console.log(Doc);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -30,6 +30,7 @@ const Viewer = ({ Doc }) => {
 
   return (
     <div className="relative flex flex-col items-center p-3  w-full overflow-hidden border-2 bg-gray-100 ">
+     <p className="absolute top-0  left-2">{id}</p>
       <a href={Doc}> 
       <svg 
         xmlns="http://www.w3.org/2000/svg"

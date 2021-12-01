@@ -28,6 +28,6 @@
     "nodejs-file-downloader": "^4.7.4",
     "nodemailer": "^6.7.0",
     "nodemon": "^2.0.13",
-    "stripe": "^8.184.0"
+    "stripe": "^8.191.0"
   }
 }

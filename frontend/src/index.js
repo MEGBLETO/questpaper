@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
 import { Provider } from 'react-redux'
 import loginReducer from './features/Login'
+import tokenReducer from './features/Token'
 import App from './App';
 import { BrowserRouter as Router} from "react-router-dom";
 
@@ -16,6 +17,7 @@ const store = configureStore({
 
     //I called my reducer login gence why im accessing in nav like that
     login: loginReducer,
+    token:  tokenReducer
   }
 })
 

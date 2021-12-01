@@ -37,7 +37,7 @@ const Nav = () => {
         className={
           click
             ? "mobilenav sm:flex space-x-3 text-center items-center"
-            : "hidden sm:flex space-x-3 text-center items-center"
+            : "hidden sm:flex  space-x-2 text-center items-center"
         }
       >
         <li   className="hover: cursor-pointer hover:text-red-200 ">
@@ -76,6 +76,14 @@ const Nav = () => {
           <Scrollchor to="#about">
             <Link exact to="/offers">
             Offers
+            </Link>
+          </Scrollchor>
+        </li> }
+
+        {loginStatus &&  <li className="hover: cursor-pointer hover:text-red-200">
+          <Scrollchor to="#about">
+            <Link exact to="/membership">
+          Souscription
             </Link>
           </Scrollchor>
         </li> }

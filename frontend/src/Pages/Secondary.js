@@ -1,26 +1,79 @@
-import React,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Doc from "../doc/formulaire.pdf";
 import Viewer from "../components/Viewer";
 import { Link } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
 
 const Secondary = () => {
+  const [docs, setDoc] = useState([]);
+  const [year, setYear] = useState();
+  const [domaine, setDomaine] = useState("");
 
- const[docs, setDoc]=useState([])
+  const getdocs = async () => {
+    if (domaine && year) {
+      const result = await axios.get(
+        `http://localhost:5000/api/user/files/${domaine}/${year}`
+      );
+      console.log(result.data);
+      setDoc(result.data);
+    }
+  };
 
-const getdocs = async()=>{
-      const result = await axios.get('http://localhost:5000/api/user/files')
-        console.log(result.data)
-        setDoc(result.data)
- 
-}
+  const getAlldocs = async () => {
+    const result = await axios.get(`http://localhost:5000/api/user/files`);
+    console.log(result.data);
 
+    if(result.data){
 
-useEffect(()=>{
-  getdocs();
-},[])
+      setDoc(result.data);
+    }else{
+      setDoc({"data" : "no data found"});
+    }
+  };
 
-const data = '1637269791930.pdf'
+  const getBydomaine = async () => {
+    const result = await axios.get(
+      `http://localhost:5000/api/user/secteur/${domaine}`
+    );
+    if(result.data){
+      setDoc(result.data);
+    }else{
+      setDoc({"data" : "no data found"});
+    }
+  };
+
+  const getByYear = async () => {
+    if (year) {
+      const result = await axios.get(
+        `http://localhost:5000/api/user/annee/${year}`
+      );
+      if(result.data){
+        setDoc(result.data);
+      }else{
+        setDoc({"data" : "no data found"});
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (year && domaine) {
+      getdocs();
+    }
+  }, [year, domaine]);
+
+  useEffect(() => {
+    if (!year && !domaine) {
+      getAlldocs();
+    }
+  }, []);
+
+  useEffect(() => {
+    getBydomaine();
+  }, [domaine]);
+
+  useEffect(() => {
+    getByYear();
+  }, [year]);
 
   return (
     <div className="flex m-3 flex-col items-center  min-h-screen ">
@@ -35,23 +88,67 @@ const data = '1637269791930.pdf'
         </Link>
       </div>
 
-      <div className="flex h-2/3 p-3 my-4 mx-1  sm:mx-auto w-full sm:w-1/2 shadow-md  bg-gray-100 justify-center">
-        <input className="w-2/3 " type="text" />
-        <input
-          className="p-2 cursor-pointer"
-          type="button"
-          name="Search"
-          value="Search"
-        />
+      <div className="flex flex-col sm:flex-row w-full p-3 mb-8 bg-gray-800 text-white justify-evenly">
+        <div>
+          <p className="font-bold">Filtrer Par:</p>
+        </div>
+        <div className="flex flex-col ">
+          <label className="font-bold p-2" htmlFor="adresse">
+            Année d'etude:
+          </label>
+          <select
+            onChange={(e) => setYear(e.target.value)}
+            className="p-2 text-black"
+            id="year"
+            name="year"
+          >
+            <option value="none" selected disabled hidden>
+              -------Sélectionner----------
+            </option>
+            <option value="1">License 1</option>
+            <option value="2">License 2</option>
+            <option value="3">License 3</option>
+            <option value="4">Master 1</option>
+            <option value="5">Master 2</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col ">
+          <label className="font-bold p-2" htmlFor="Specialite">
+            Specialite:
+          </label>
+          <select
+            onChange={(e) => setDomaine(e.target.value)}
+            className="p-2 text-black "
+            id="specialite"
+            name="specialite"
+            required
+          >
+            <option value="none" selected disabled hidden>
+              -------Sélectionner----------
+            </option>
+            <option value="anglais">Anglais</option>
+            <option value="informatique">Informatique</option>
+            <option value="biologie">Biologie</option>
+            <option value="commerce">commerce</option>
+            <option value="droit">Droit</option>
+          </select>
+        </div>
       </div>
+
       <div className="relative  min-h-screen ">
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
-    
-          {docs.map(doc =>(
-            //console.log(doc.sujet_id)
-            <Viewer key={doc.sujet_id} Doc={`https://questpaper-subjects.s3.eu-west-3.amazonaws.com/${doc.nom_sujet}`} />
-          ))}
-       
+          {docs ? (
+            docs.map((doc) => (
+              <Viewer
+                key={doc.sujet_id}
+                id={doc.sujet_id}
+                Doc={`https://questpaper-subjects.s3.eu-west-3.amazonaws.com/${doc.nom_sujet}`}
+              />
+            ))
+          ) : (
+            <h1>No data found</h1>
+          )}
         </div>
       </div>
     </div>

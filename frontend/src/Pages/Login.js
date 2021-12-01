@@ -3,13 +3,15 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
+import { tokenstate } from "../features/Token";
 
 //importing my action for the situation
 
 import { situation } from "../features/Login";
 
 const Login = () => {
+ 
 
   const { state } = useLocation();
   //To implement the user redirection fonctionality
@@ -27,49 +29,41 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => setLoginData(data);
 
-
   //https://questpaper.herokuapp.com/api/user/login
 
   const postLoginData = async () => {
-try {
-  const email = await logindata.email;
-  const password = await logindata.password;
+    try {
+      const email = await logindata.email;
+      const password = await logindata.password;
 
-  axios
-    .post("http://localhost:5000/api/user/login", {
-      email: email,
-      password: password,
-    })
-    .then((response) => {
-      if (response.data.serverRes === "success") {
-        dispatch(situation(true));
-        localStorage.setItem('token', response.data.token)
-        Cookies.set('loggedIn', 'true')
-        history.push('/secondary')
-      }else{
-           setMessage(response.data.message)
-           history.push('/login')
-        
-      }
-    
-  
-});
-
-} catch (error) {
-  console.log(error)
-}
-  }
-
-
-
+      axios
+        .post("http://localhost:5000/api/user/login", {
+          email: email,
+          password: password,
+        })
+        .then((response) => {
+          if (response.data.serverRes === "success") {
+            dispatch(situation(true));
+            localStorage.setItem("token", response.data.token);
+            Cookies.set("loggedIn", "true");
+            const token = localStorage.getItem("token");
+            dispatch(tokenstate(token));
+            history.push("/secondary");
+          } else {
+            setMessage(response.data.message);
+            history.push("/login");
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (logindata) {
       postLoginData();
     }
   }, [logindata]);
-
-
 
   return (
     <div className="flex relative flex-col p-4 items-center min-h-screen dark:bg-black">

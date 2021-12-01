@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Secondary from "./Pages/Secondary";
+import Membership from './Pages/Membership';
 
 function App() {
   const loginStatus = useSelector((state) => state.login.value)
@@ -48,6 +49,7 @@ function App() {
         <ProtectedRoute path="/upload"isAuth={loginStatus} component={Upload}/>
         <ProtectedRoute path="/offers" isAuth={loginStatus}  component={Offers} />
         <ProtectedRoute path="/secondary" isAuth={loginStatus} component={Secondary} />
+        <ProtectedRoute path="/membership" isAuth={loginStatus} component={Membership} />
       </Switch>
       <CookieConsent location="bottom" style={{ background: "#2B373B" }} buttonText="Je Comprends !" debug={true}>Ce site utillise des cookies pour une meilleur experience utillisateurs.</CookieConsent>
       <Footer />

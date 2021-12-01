@@ -15,7 +15,7 @@ const Offers = () => {
 
   const getData = async () => {
     const req = await axios.get(
-      `https://api.adzuna.com/v1/api/jobs/fr/search/3?app_id=a8d2c594&app_key=16b7abd53d888e1013c9c8735e92b9af&title_only=${search}`,
+      `https://api.adzuna.com/v1/api/jobs/fr/search/8?app_id=a8d2c594&app_key=16b7abd53d888e1013c9c8735e92b9af&title_only=${search}`,
     );
 
     const res = await req.data;

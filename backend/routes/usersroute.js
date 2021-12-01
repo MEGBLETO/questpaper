@@ -6,9 +6,8 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
-var once = require("once");
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+
 //destination de stockage des fichiers qui on ete uploader sur la plateforme
 
 //s3
@@ -16,18 +15,32 @@ var once = require("once");
 const { uploadFile } = require("../s3");
 
 const dbconn = require("../config");
+const e = require("express");
 
-//email sending config details
+//email sending config detailser
+// var transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: "questpaper2021@gmail.com",
+//     pass: process.env.EMAIL_PWD,
+//   },
+//   logger: true,
+//   tls: {
+//     rejectUnauthorized: false,
+//   },
+// });
+
 var transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.mail.yahoo.com",
+  port: 465,
+  service: "Yahoo",
+  secure: false,
   auth: {
-    user: "questpaper2021@gmail.com",
+    user: "questpaper2021@yahoo.com",
     pass: process.env.EMAIL_PWD,
   },
+  rejectUnauthorized: false,
   logger: true,
-  tls: {
-    rejectUnauthorized: false,
-  },
 });
 
 router.get("/emailverify", (req, res) => {
@@ -110,7 +123,7 @@ router.post("/inscrire", (req, res) => {
         }
         //Email de verification de compte email
         var mailing = {
-          from: '"Veuillez confirmer votre adresse email" <questpaper2021@gmail.com>',
+          from: '"Veuillez confirmer votre adresse email" <questpaper2021@yahoo.com',
           to: email,
           subject: "Questpaper -Verifier votre adresse email",
           html: `<h2>${sirname} ${name}</h2>
@@ -250,19 +263,18 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 router.post("/upload", upload.single("subject"), async (req, res) => {
-
-  const file = await req.file
+  const file = await req.file;
   try {
-
-    if(file){
- //ici je recupere le fichier que jai renvoye de mon frontend
-      const { originalname, destination, size, filename, path } = await req.file;
+    if (file) {
+      //ici je recupere le fichier que jai renvoye de mon frontend
+      const { originalname, destination, size, filename, path } =
+        await req.file;
       const { name, domaine, year, user_email } = req.body;
-    
+
       const result = uploadFile(file);
-  
+
       console.log(await result);
-  
+
       await dbconn.query(
         "INSERT INTO sujets (nom_sujet, nom_originel,domaine_sujet,level_sujet, path_sujet, sujet_taille, email_ajout) VALUES (?,?,?,?,?,?,?);",
         [filename, originalname, domaine, year, path, size, user_email],
@@ -273,8 +285,8 @@ router.post("/upload", upload.single("subject"), async (req, res) => {
           }
         }
       );
-      res.send({ "message": "Le fichier a bien été uploader" });
-    }    
+      res.send({ message: "Le fichier a bien été uploader" });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -283,25 +295,102 @@ router.post("/upload", upload.single("subject"), async (req, res) => {
 //verifyToken
 
 //files fetching from amazon s3
+router.get("/files/:domaine/:year", (req, res) => {
+  var domaine = req.params.domaine;
+  var year = req.params.year;
+  dbconn.query(
+    "SELECT nom_sujet, sujet_id FROM sujets WHERE level_sujet= COALESCE(?, level_sujet) AND domaine_sujet= COALESCE(?, domaine_sujet);",
+    [year, domaine],
+    (error, result) => {
+      if (error) {
+        throw error;
+      } else if (result.length > 0) {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//si seulement domaine
+router.get("/secteur/:domaine", (req, res) => {
+  var domaine = req.params.domaine;
+  dbconn.query(
+    "SELECT nom_sujet, sujet_id FROM sujets WHERE domaine_sujet= COALESCE(?, domaine_sujet);",
+    [domaine],
+    (error, result) => {
+      if (error) {
+        throw error;
+      } else if (result.length > 0) {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//si seulement annee
+router.get("/annee/:year", (req, res) => {
+  var year = req.params.year;
+  dbconn.query(
+    "SELECT nom_sujet, sujet_id FROM sujets WHERE level_sujet= COALESCE(?, level_sujet);",
+    [year],
+    (error, result) => {
+      if (error) {
+        throw error;
+      } else if (result.length > 0) {
+        res.send(result);
+      }
+    }
+  );
+});
+
 router.get("/files", (req, res) => {
-  dbconn.query("SELECT nom_sujet, sujet_id FROM sujets", (error, result) => {
+  var domaine = req.params.domaine;
+  var year = req.params.year;
+  dbconn.query("SELECT nom_sujet, sujet_id FROM sujets;", (error, result) => {
     if (error) {
       throw error;
     } else if (result.length > 0) {
-        res.send(result)
-    }
+      res.send(result);
+    } else res.send({ message: "No subject found" });
   });
 });
 
+// logi stripe pour les paiements=========================================
 
+const storeItems = new Map([
+  [1, { priceInCents: 2000, name: "Plan d'1 mois" }],
+  [2, { priceInCents: 7000, name: "Plan de 3 mois" }],
+  [3, { priceInCents: 12000, name: "Plan de 4 mois" }],
+  [4, { priceInCents: 20000, name: "Plan de 5 mois" }],
+]);
 
-
-
-//user file download route
-router.get("/download", (req, res) => {
-  const file = fs.readFileSync("subjects/rib.pdf");
-  res.contentType("application/pdf");
-  res.send(file);
+router.post("/payer", async (req, res) => {
+  try {
+    const id = await req.body.value;
+    const session = await stripe.checkout.sessions.create({
+     
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: storeItems.get(id).name,
+            },
+            unit_amount: storeItems.get(id).priceInCents,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      payment_method_types: ["card"],
+      success_url: `http://localhost:3000/membership`,
+      cancel_url: "http://localhost:3000/membership",
+    });
+    res.json({ url: session.url});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: e.message });
+  }
 });
 
 //get all the users
@@ -321,6 +410,22 @@ router.get("/users", verifyToken, (req, res) => {
           }
         }
       });
+    }
+  });
+}); 
+
+
+//get a particular subjects
+router.get("/users", verifyToken, (req, res) => {
+  sql = `SELECT  `;
+
+  dbconn.query(sql, (error, result) => {
+    if (error) {
+      throw err;
+    } else {
+      if (result.length > 0) {
+        res.json({ authData: authData, result: result });
+      }
     }
   });
 });

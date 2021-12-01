@@ -5,6 +5,8 @@
   "dependencies": {
     "@heroicons/react": "^1.0.5",
     "@reduxjs/toolkit": "^1.6.2",
+    "@stripe/react-stripe-js": "^1.6.0",
+    "@stripe/stripe-js": "^1.21.1",
     "axios": "^0.23.0",
     "dotenv": "^10.0.0",
     "firebase": "^9.1.1",
@@ -27,6 +29,7 @@
     "react-scripts": "4.0.3",
     "react-scrollchor": "^7.0.1",
     "react-simple-typewriter": "^3.0.1",
+    "react-toastify": "^8.1.0",
     "react-typist": "^2.0.5",
     "redux": "^4.1.2",
     "tar": "^6.1.11",

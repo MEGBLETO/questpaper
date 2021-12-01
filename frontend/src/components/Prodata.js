@@ -1,21 +1,26 @@
 import React,{useState, useEffect} from 'react'
+import { decodeToken } from 'react-jwt'
+import Loader from './Loader'
 
 
 
 
 
-const Prodata = ({mydecodedtoken}) => {
+const Prodata = ({decodedToken}) => {
 
 
 
-    const [data, setdata]=  useState()
+    const [data, setData]=  useState()
 
-    
-    useEffect(async() => {
-  console.log(mydecodedtoken)
-    }, [])
+   useEffect(async() =>{
+     if(await decodedToken){
+       console.log(await decodeToken)
+     }
+        //  setData(await decodedToken)
+   },[decodeToken])
 
     return (
+      decodeToken?<Loader/> :
         <div className="h-screen flex flex-col p-4">
         <div className="flex flex-col text-3xl p-3 items-center  justify-center border-2">
           <h1>Profile</h1>
@@ -23,10 +28,7 @@ const Prodata = ({mydecodedtoken}) => {
         <div className="flex   border-2 h-full">
           <div className="flex-1 text-center flex-col h-full ">
             <div>
-              {/* <h1>{data.user_id}</h1>
-              <h1>{data.user_sirname}</h1>
-              <h1>{data.user_name}</h1>
-              <h1>{data.user_email}</h1> */}
+              {console.log(data)}
             </div>
             <div>
               <h1>Membership</h1>
