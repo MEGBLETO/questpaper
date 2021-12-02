@@ -26,7 +26,7 @@ const Nav = () => {
 
 
   return (
-    <div className="bg-gray-800 sticky z-10 top-0 p-4 flex justify-between text-white">
+    <div className="flex bg-gray-800 flex-wrap place-items-center sticky z-10 top-0 p-4 justify-between text-white">
       <Scrollchor to="#hero">
         <Link exact to="/">
           <h1 className="flex-1 font-cookie text-3xl">QuestPaper</h1>

@@ -7,22 +7,33 @@ const Profile = () => {
 
   const token = localStorage.getItem("token");
 
+  const [data, setdata] = useState()
 
-  const mydecodedtoken = useJwt(token);
+
+  //const mydecodedtoken = useJwt(token);
+
+  const decodetoken = (token) =>{
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    console.log(JSON.parse(jsonPayload).data);
+    setdata(JSON.parse(jsonPayload).data);
+  }
 
   useEffect(async() => {  
-    const req = await mydecodedtoken
-    if(req){
-
-      console.log(req)
-    }
+   if(token){
+     decodetoken(token)
+   }
  
-  }, [token])
+  },[ ])
   
 
   return (
     <div className="">
-      <Prodata  decodedToken={mydecodedtoken} />
+      <Prodata  decodedToken={data} />
     </div>
   );
 };
