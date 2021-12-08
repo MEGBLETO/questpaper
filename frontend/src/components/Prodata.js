@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { decodeToken } from "react-jwt";
 import Loader from "./Loader";
 
 const Prodata = ({ decodedToken }) => {
   const [Loading, setloading] = useState(true);
 
-  useEffect(async () => {
+  useEffect(() => {
     if(decodedToken){
      setloading(false)
-      console.log(await decodedToken)
+      //console.log(await decodedToken)
     }
   },[decodedToken]);
 

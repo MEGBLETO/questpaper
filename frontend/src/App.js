@@ -15,10 +15,15 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Secondary from "./Pages/Secondary";
 import Membership from './Pages/Membership';
+import Success from './Pages/Success'
+import Failed from './Pages/Failed';
+import NotFound from "./Pages/NotFound"
+import Corriger from './Pages/Corriger';
+//import Cookies from 'js-cookie';
 
 function App() {
   const loginStatus = useSelector((state) => state.login.value)
-  console.log(loginStatus)
+ 
 
   const dispatch = useDispatch();
   let history = useHistory();
@@ -28,13 +33,26 @@ function App() {
   
   useEffect(() => {
   const token =  localStorage.getItem('token');
+
   if(token){
+    
     dispatch(situation(true));
     history.push(location.pathname)
   }else{
     dispatch(situation(false));
   }
-}, [])
+},[])
+
+// useEffect(() =>{
+//   const cookie = Cookies.get('loggedIn')
+//   if(cookie){
+//     dispatch(situation(true));
+//     history.push(location.pathname)
+//   }else{
+//     dispatch(situation(false));
+//   }
+// },[])
+
 
 
 
@@ -42,14 +60,19 @@ function App() {
     <>
     <Nav/>
       <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Registration} />
-        <ProtectedRoute path="/profile"  isAuth={loginStatus} component={Profile}/>
-        <ProtectedRoute path="/upload"isAuth={loginStatus} component={Upload}/>
-        <ProtectedRoute path="/offers" isAuth={loginStatus}  component={Offers} />
-        <ProtectedRoute path="/secondary" isAuth={loginStatus} component={Secondary} />
-        <ProtectedRoute path="/membership" isAuth={loginStatus} component={Membership} />
+        <Route exact path="/"  component={Home} />
+        <Route exact  path="/login" component={Login} />
+        <Route exact  path="/register" component={Registration} />
+        <ProtectedRoute exact  path="/profile"  isAuth={loginStatus} component={Profile}/>
+        <ProtectedRoute exact  path="/upload"isAuth={loginStatus}  component={Upload}/>
+        <ProtectedRoute exact path="/offers" isAuth={loginStatus}  component={Offers} />
+        <ProtectedRoute exact  path="/secondary" isAuth={loginStatus}  component={Secondary} />
+        <ProtectedRoute exact  path="/membership" isAuth={loginStatus}  component={Membership} />
+        <ProtectedRoute exact  path="/success" isAuth={loginStatus} component={Success} />
+        <ProtectedRoute exact  path="/failed" isAuth={loginStatus} component={Failed} />
+        <ProtectedRoute exact  path="/corriger" isAuth={loginStatus} component={Corriger} />
+        <Route component={NotFound} />
+
       </Switch>
       <CookieConsent location="bottom" style={{ background: "#2B373B" }} buttonText="Je Comprends !" debug={true}>Ce site utillise des cookies pour une meilleur experience utillisateurs.</CookieConsent>
       <Footer />

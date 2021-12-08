@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useJwt} from "react-jwt";
-import { useSelector } from "react-redux";
 import Prodata from "../components/Prodata";
 
 const Profile = () => {
@@ -28,7 +26,7 @@ const Profile = () => {
      decodetoken(token)
    }
  
-  },[ ])
+  },[])
   
 
   return (

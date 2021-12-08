@@ -8,7 +8,7 @@ const Offers = () => {
   const [offers, setOffers] = useState();
   const [loading, setisLoading] = useState(true);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const { register, handleSubmit} = useForm();
   const onSubmit = data => setSearch(data.searchitem);
 
 
@@ -22,7 +22,7 @@ const Offers = () => {
     if (res) {
       setisLoading(false);
       setOffers(res.results);
-      console.log(offers)
+      //console.log(offers)
     }
   };
 

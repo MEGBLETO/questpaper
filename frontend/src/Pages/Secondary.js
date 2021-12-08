@@ -8,26 +8,60 @@ const Secondary = () => {
   const [docs, setDoc] = useState([]);
   const [year, setYear] = useState();
   const [domaine, setDomaine] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+
+  const token = localStorage.getItem("token");
+
+  const [data, setdata] = useState()
+
+
+  //const mydecodedtoken = useJwt(token);
+
+  const decodetoken = (token) =>{
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    //console.log(JSON.parse(jsonPayload).data);
+    setdata(JSON.parse(jsonPayload).data);
+  }
+
+  useEffect(async() => {  
+   if(token){
+     decodetoken(token)
+   }
+ 
+  },[])
+
+
+const getSubscriptionData = async(id) =>{
+  await axios.get( `http://localhost:5000/api/user/transaction/${id}`).
+  then((res) => {if(res){
+    setSubscribed(true)
+  } })
+}
+
+
 
   const getdocs = async () => {
     if (domaine && year) {
       const result = await axios.get(
         `http://localhost:5000/api/user/files/${domaine}/${year}`
       );
-      console.log(result.data);
       setDoc(result.data);
     }
   };
 
   const getAlldocs = async () => {
     const result = await axios.get(`http://localhost:5000/api/user/files`);
-    console.log(result.data);
 
-    if(result.data){
-
+    if (result.data) {
       setDoc(result.data);
-    }else{
-      setDoc({"data" : "no data found"});
+    } else {
+      setDoc({ data: "no data found" });
     }
   };
 
@@ -35,10 +69,10 @@ const Secondary = () => {
     const result = await axios.get(
       `http://localhost:5000/api/user/secteur/${domaine}`
     );
-    if(result.data){
+    if (result.data) {
       setDoc(result.data);
-    }else{
-      setDoc({"data" : "no data found"});
+    } else {
+      setDoc({ data: "no data found" });
     }
   };
 
@@ -47,10 +81,10 @@ const Secondary = () => {
       const result = await axios.get(
         `http://localhost:5000/api/user/annee/${year}`
       );
-      if(result.data){
+      if (result.data) {
         setDoc(result.data);
-      }else{
-        setDoc({"data" : "no data found"});
+      } else {
+        setDoc({ data: "no data found" });
       }
     }
   };
@@ -75,17 +109,38 @@ const Secondary = () => {
     getByYear();
   }, [year]);
 
+
+
+  useEffect(async() =>{
+if(data){
+  const id = await(data.user_id)
+  getSubscriptionData(id)
+}
+  },[data])
+
   return (
-    <div className="flex m-3 flex-col items-center  min-h-screen ">
-      <div className="relative  w-full m-4 p-3">
+    <div className="flex m-3  flex-col items-center  min-h-screen ">
+      <div className="relative flex sm:flex-col min-h-1/2  w-full m-4 p-5">
         <Link
-          className="w-1/5 flex justify-center sm: absolute  right-2  -top-4 p-3   bg-gray-400 hover:bg-gray-200"
+          className="w-1/5 flex justify-center sm: absolute  left-2  -top-4 p-3 bg-gray-400 hover:bg-gray-200"
           to="/upload"
         >
           <div className="flex text-sm">
             <p>Upload</p>
           </div>
         </Link>
+        {subscribed ? (
+          <Link
+            className="w-1/5 flex justify-center sm: absolute  right-2  -top-4 p-3   bg-gray-400 hover:bg-gray-200"
+            to="/corriger"
+          >
+            <div className="flex text-sm">
+              <p>Corriger</p>
+            </div>
+          </Link>
+        ) : (
+        <div></div>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row w-full p-3 mb-8 bg-gray-800 text-white justify-evenly">

@@ -1,10 +1,10 @@
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import Cookies from "js-cookie";
-import { tokenstate } from "../features/Token";
+
 
 //importing my action for the situation
 
@@ -12,8 +12,6 @@ import { situation } from "../features/Login";
 
 const Login = () => {
  
-
-  const { state } = useLocation();
   //To implement the user redirection fonctionality
 
   let history = useHistory();
@@ -46,10 +44,11 @@ const Login = () => {
             dispatch(situation(true));
             localStorage.setItem("token", response.data.token);
             Cookies.set("loggedIn", "true");
-            const token = localStorage.getItem("token");
-            dispatch(tokenstate(token));
+            // const token = localStorage.getItem("token");
+            // dispatch(tokenstate(token));
             history.push("/secondary");
           } else {
+            console.log(response.data.message)
             setMessage(response.data.message);
             history.push("/login");
           }

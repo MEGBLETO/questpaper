@@ -18,30 +18,21 @@ const dbconn = require("../config");
 const e = require("express");
 
 //email sending config detailser
-// var transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: "questpaper2021@gmail.com",
-//     pass: process.env.EMAIL_PWD,
-//   },
-//   logger: true,
-//   tls: {
-//     rejectUnauthorized: false,
-//   },
-// });
-
 var transporter = nodemailer.createTransport({
-  host: "smtp.mail.yahoo.com",
-  port: 465,
-  service: "Yahoo",
-  secure: false,
+  service: "gmail",
+  port:465,
+  secure: true,
+  secureConnection: false,
   auth: {
-    user: "questpaper2021@yahoo.com",
+    user: "questpaper2021@gmail.com",
     pass: process.env.EMAIL_PWD,
   },
-  rejectUnauthorized: false,
   logger: true,
+  tls: {
+    rejectUnauthorized: true,
+  },
 });
+
 
 router.get("/emailverify", (req, res) => {
   let stat = "TRUE";
@@ -123,13 +114,14 @@ router.post("/inscrire", (req, res) => {
         }
         //Email de verification de compte email
         var mailing = {
-          from: '"Veuillez confirmer votre adresse email" <questpaper2021@yahoo.com',
+          from: '"Veuillez confirmer votre adresse email" <questpaper2021@gmail.com>',
           to: email,
           subject: "Questpaper -Verifier votre adresse email",
           html: `<h2>${sirname} ${name}</h2>
                    <h4>Veuillez confirmer votre adresse email pour finaliser votre inscription</h4>
                    <a href="http://${req.headers.host}/api/user/emailverify?email=${email}&token=${emailtoken}">Confirmer la creation de mon compte</a>`,
         };
+
 
         //envoie du mail
 
@@ -189,7 +181,7 @@ router.post("/login", async (req, res) => {
                       resultat.length > 0 &&
                       resultat[0].user_verif === 1
                     ) {
-                      res.status(200).send({
+                      res.send({
                         serverRes: "success",
                         token: token,
                         message: "The password is correct !",
@@ -203,13 +195,11 @@ router.post("/login", async (req, res) => {
                   }
                 );
               } else {
-                res
-                  .status(401)
-                  .send({ message: "The password is incorrect !" });
+                res.send({ message: "The password is incorrect !" });
               }
             });
           } else {
-            res.status(401).send({
+            res.send({
               message: "You do not have an account please create one",
             });
           }
@@ -367,6 +357,9 @@ const storeItems = new Map([
 router.post("/payer", async (req, res) => {
   try {
     const id = await req.body.value;
+    const user = await req.body.user;
+    const montant_sub = storeItems.get(id).priceInCents;
+
     const session = await stripe.checkout.sessions.create({
      
       line_items: [
@@ -383,15 +376,36 @@ router.post("/payer", async (req, res) => {
       ],
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `http://localhost:3000/membership`,
-      cancel_url: "http://localhost:3000/membership",
+      success_url: `http://localhost:3000/success`,
+      cancel_url: "http://localhost:3000/failed",
     });
+    let transactionId = session.id
     res.json({ url: session.url});
+
+
+    dbconn.query("INSERT INTO membership (user_id, montant_sub,sub_mois,id_transaction) VALUES (?,?,?,?);",[user, montant_sub, id, transactionId], (error, result) => {
+      if (error) {
+        throw error;
+      } else {
+        if (result.length > 0) {
+          res.json({result: result });
+        }
+      }
+    });
+    //console.log(res)
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: e.message });
   }
 });
+
+router.post('/order/success', async (req, res) => {
+  const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+  const customer = await stripe.customers.retrieve(session.customer);
+
+  console.log(customer);
+});
+
 
 //get all the users
 router.get("/users", verifyToken, (req, res) => {
@@ -415,19 +429,23 @@ router.get("/users", verifyToken, (req, res) => {
 }); 
 
 
-//get a particular subjects
-router.get("/users", verifyToken, (req, res) => {
-  sql = `SELECT  `;
 
-  dbconn.query(sql, (error, result) => {
+router.get("/transaction/:userid",(req, res) => {
+let userId = req.params.userid;
+
+  dbconn.query("SELECT * FROM membership WHERE user_id = ?;",[userId], (error, result) => {
     if (error) {
       throw err;
     } else {
       if (result.length > 0) {
-        res.json({ authData: authData, result: result });
+        res.json({result: result });
       }
     }
   });
 });
+
+
+
+
 
 module.exports = router;

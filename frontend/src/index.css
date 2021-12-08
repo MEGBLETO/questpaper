@@ -26,7 +26,7 @@ body{
         flex-direction: column;
         justify-content: space-around;
         position: absolute;
-        top: 10vh;
+        top: 5vh;
         min-width: 200px;
         min-height: 400px;
         background: rgba(31, 41, 55, var(--tw-bg-opacity));

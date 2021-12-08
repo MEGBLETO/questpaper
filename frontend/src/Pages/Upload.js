@@ -10,7 +10,6 @@ import { useJwt } from "react-jwt";
 const Upload = () => {
 
 
-  let history = useHistory()
 
 
 
@@ -55,7 +54,7 @@ const Upload = () => {
           }
         },
       };
-      https://questpaper.herokuapp.com/api/user/upload
+     
  
       await axios
         .post("http://localhost:5000/api/user/upload", formData, options)
@@ -76,7 +75,7 @@ const Upload = () => {
   useEffect(async () => {
     try {
       if (donneeform) {
-        const { user_email, user_name, user_sirname } = await decodedToken.data;
+        const { user_email} = await decodedToken.data;
         console.log(donneeform.file[0]);
         setFilename(donneeform.file[0].name);
         setFile(donneeform.file[0]);
