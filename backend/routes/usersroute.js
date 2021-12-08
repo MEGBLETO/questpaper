@@ -399,12 +399,27 @@ router.post("/payer", async (req, res) => {
   }
 });
 
-router.post('/order/success', async (req, res) => {
-  const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
-  const customer = await stripe.customers.retrieve(session.customer);
 
-  console.log(customer);
-});
+
+
+router.get('/corriger/:id'), (req,res) =>{
+  let id  = req.params.id;
+
+
+  dbconn.query("SELECT * FROM membership WHERE user_id = ?;",[sujetId], (error, result) => {
+    if (error) {
+      throw err;
+    } else {
+      if (result.length > 0) {
+        res.json({result: result });
+      }
+    }
+  });
+}
+
+
+
+
 
 
 //get all the users
