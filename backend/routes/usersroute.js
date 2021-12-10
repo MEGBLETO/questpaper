@@ -149,7 +149,7 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     await dbconn.query(
-      "SELECT user_id, user_email, user_sirname, user_name,  user_password FROM users WHERE user_email = ?;",
+      "SELECT user_id, user_email, user_sirname, user_name, role, user_password FROM users WHERE user_email = ?;",
       email,
       (error, result) => {
         if (error) {
@@ -461,6 +461,82 @@ let userId = req.params.userid;
 
 
 
+
+//demande pour etre enseignant
+
+router.post("/demande", (req, res) =>{
+   const {user_id, user_sirname, user_name} = req.body;
+
+   dbconn.query("INSERT INTO demande (user_id, user_sirname, user_name) VALUES (?,?,?);",[user_id, user_name, user_sirname], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      if (result.length > 0) {
+        res.json({result: result });
+      }
+    }
+})
+
+}
+
+)
+
+
+
+//recuperer toute les demandes en tant que admin
+
+router.get("/consulter",(req, res) => {
+  let userId = req.params.userid;
+  
+    dbconn.query("SELECT * FROM demande WHERE traiter = 'false' ;", (error, result) => {
+      if (error) {
+        throw err;
+      } else {
+        if (result.length > 0) {
+          res.json({result: result });
+        }
+      }
+    });
+  });
+
+
+  //mettre as admin
+
+  router.post("/upvalidate/:userid", (req, res) =>{
+    const userid = req.params.userid;
+ 
+    dbconn.query(`UPDATE users SET role = 'enseignant' WHERE user_id = ${userid}`,(error, result) => {
+     if (error) {
+       throw error;
+     } else {
+       if (result.length > 0) {
+         res.json({result: result });
+         console.log(result)
+       }
+     }
+ })
+ 
+ }
+ 
+ )
+ 
+
+
+ router.get("/idsujet", (req, res) =>{
+
+  dbconn.query(`SELECT sujet_id FROM sujets`,(error, result) => {
+   if (error) {
+     throw error;
+   } else {
+     if (result.length > 0) {
+       res.json({result: result });
+     }
+   }
+})
+
+}
+
+)
 
 
 module.exports = router;

@@ -19,6 +19,8 @@ import Success from './Pages/Success'
 import Failed from './Pages/Failed';
 import NotFound from "./Pages/NotFound"
 import Corriger from './Pages/Corriger';
+import Consultation from './Pages/Consultation';
+import Uploadcore from './Pages/Uploadcore';
 //import Cookies from 'js-cookie';
 
 function App() {
@@ -71,8 +73,9 @@ function App() {
         <ProtectedRoute exact  path="/success" isAuth={loginStatus} component={Success} />
         <ProtectedRoute exact  path="/failed" isAuth={loginStatus} component={Failed} />
         <ProtectedRoute exact  path="/corriger" isAuth={loginStatus} component={Corriger} />
+        <ProtectedRoute exact  path="/consultation" isAuth={loginStatus} component={Consultation} />
+        <ProtectedRoute exact  path="/upcorriger" isAuth={loginStatus} component={Uploadcore} />
         <Route component={NotFound} />
-
       </Switch>
       <CookieConsent location="bottom" style={{ background: "#2B373B" }} buttonText="Je Comprends !" debug={true}>Ce site utillise des cookies pour une meilleur experience utillisateurs.</CookieConsent>
       <Footer />
