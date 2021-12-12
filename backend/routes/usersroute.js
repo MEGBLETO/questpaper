@@ -16,6 +16,7 @@ const { uploadFile } = require("../s3");
 
 const dbconn = require("../config");
 const e = require("express");
+const { RSA_NO_PADDING } = require("constants");
 
 //email sending config detailser
 var transporter = nodemailer.createTransport({
@@ -284,6 +285,46 @@ router.post("/upload", upload.single("subject"), async (req, res) => {
 
 //verifyToken
 
+
+
+//upload de corriger
+
+
+router.post("/upload/corriger", upload.single("subject"), async (req, res) => {
+  const file = await req.file;
+  try {
+    if (file) {
+      //ici je recupere le fichier que jai renvoye de mon frontend
+      const { originalname, destination, size, filename, path } =
+        await req.file;
+      const { name, domaine, year, user_email } = req.body;
+
+      const result = uploadFile(file);
+
+      console.log(filename, name, path, size, user_email);
+
+      await dbconn.query(
+        "INSERT INTO correction (sujet_id,nom_correction,path_correction,correction_taille, email_ajout) VALUES (?,?,?,?,?);",
+        [domaine, filename, path, size, user_email],
+        (err, result) => {
+          console.log(result)
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+        }
+      );
+      res.send({ message: "Le fichier a bien été uploader" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+
+
+
 //files fetching from amazon s3
 router.get("/files/:domaine/:year", (req, res) => {
   var domaine = req.params.domaine;
@@ -400,22 +441,25 @@ router.post("/payer", async (req, res) => {
 });
 
 
+//recuperer corriger grace a lid du sujet
 
-
-router.get('/corriger/:id'), (req,res) =>{
+router.get('/correction/single/:id', (req, res) =>{
   let id  = req.params.id;
 
-
-  dbconn.query("SELECT * FROM membership WHERE user_id = ?;",[sujetId], (error, result) => {
+  dbconn.query(`SELECT id_correction, nom_correction FROM correction WHERE sujet_id = ${id}`, (error, result) => {
     if (error) {
       throw err;
     } else {
       if (result.length > 0) {
+        console.log(result)
         res.json({result: result });
+      }
+      else{
+        res.send({"message": "Corriger indisponible"})
       }
     }
   });
-}
+})
 
 
 

@@ -34,7 +34,7 @@ const Offers = () => {
     <div className="min-h-screen m-4 p-4 sm:w-3/3 mx-auto  flex flex-col justify-items-center">
       <div className="flex flex-col items-center text-center justify-items-center">
       <form onSubmit={handleSubmit(onSubmit)} className="flex h-2/3 p-3 my-4 mx-1  sm:mx-auto w-full sm:w-1/2 shadow-md  bg-gray-100 justify-center">
-        <input {...register("searchitem")}  className="w-2/3 p-2 outline-none " type="text" />
+        <input placeholder="Entrer un mot cle(ex: chauffeur , electricien etc...)" {...register("searchitem")}  className="w-2/3 p-2 outline-none " type="text" />
         <input
           className="p-2 cursor-pointer bg-gray-700 hover:bg-gray-500 text-white"
           type="submit"

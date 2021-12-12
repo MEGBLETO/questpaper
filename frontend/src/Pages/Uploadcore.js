@@ -69,7 +69,7 @@ useEffect(() =>{
      
  
       await axios
-        .post("http://localhost:5000/api/user/upload", formData, options)
+        .post("http://localhost:5000/api/user/upload/corriger", formData, options)
         .then((res) => setupConfirm(res.data.message), reset)
         .catch((err) => console.log(err));
       setUploadPercentage(100, () => {

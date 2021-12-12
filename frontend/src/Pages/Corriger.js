@@ -11,19 +11,26 @@ const Corriger = () => {
     const [docs, setDoc] = useState([]);
 
     const getAlldocs = async () => {
-        const result = await axios.get(`http://localhost:5000/api/user/corriger/1638627822853.pdf`);
-    
-        if (result.data) {
-          setDoc(result.data);
+      try {
+        console.log(value)
+        const result = await axios.get(`http://localhost:5000/api/user/correction/single/${value}`);
+        if (result.data.result[0]) {
+          console.log(result)
+          setDoc(result.data.result[0]);
         } else {
-          setDoc({ data: "no data found" });
+          setDoc("");
         }
+      } catch (error) {
+        console.log(error)
+      }
       };
 
 
       useEffect(() =>{
-      getAlldocs()
-      },[])
+        if(value){
+          getAlldocs()
+        }
+      },[value])
     
 
     return (
@@ -39,22 +46,25 @@ const Corriger = () => {
               Id unique du Sujets:
             </label>
             <input
+             placeholder="Renseignez l'id du sujet (ex:  200)"
               className="text-black p-1 sm:p-2  border-2 w-full"
               onChange={e => setValue(e.target.value)}
-              type="text"
+              type="number"
             />
           </div>
         </div>
   
         <div className="relative  min-h-screen ">
+          {docs ?
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
            
                 <Viewer
                   key={docs.sujet_id}
                   id={docs.sujet_id}
-                  Doc={`https://questpaper-subjects.s3.eu-west-3.amazonaws.com/${docs.nom_sujet}`}
+                  Doc={`https://questpaper-subjects.s3.eu-west-3.amazonaws.com/${docs.nom_correction}`}
                 />
-          </div>
+          </div> : <div className="h-screen"><h1>Pas de corriger disponible</h1></div>
+}
         </div>
       </div>
     )
