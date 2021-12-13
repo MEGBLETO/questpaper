@@ -7,6 +7,8 @@ const multer = require("multer");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+// var doxygen = require('doxygen');
+// doxygen.run();
 
 //destination de stockage des fichiers qui on ete uploader sur la plateforme
 
@@ -33,6 +35,20 @@ var transporter = nodemailer.createTransport({
     rejectUnauthorized: true,
   },
 });
+
+
+
+
+
+/**
+ * @openapi
+ * /emailverify:
+ *   get:
+ *     description: Route de verification de l'adresse email fournie par l'utillisateur
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
 
 
 router.get("/emailverify", (req, res) => {
@@ -71,7 +87,22 @@ router.get("/emailverify", (req, res) => {
   }
 });
 
-//Cette route permet d'inscrire un nouvel utillisateur on verifie dans un premier temps si il existe dans la base grace a son email ensuite on hash son mot de passe avant de l'inserer
+
+
+
+/**
+ * @openapi
+ * /inscrire:
+ *   get:
+ *     description: Cette route permet d'inscrire un nouvel utillisateur on verifie dans un premier temps si il existe dans la base grace a son email ensuite on hash son mot de passe avant de l'inserer
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.
+ *    
+ * 
+ * 
+ */
+
 
 router.post("/inscrire", (req, res) => {
   try {
@@ -142,7 +173,20 @@ router.post("/inscrire", (req, res) => {
   }
 });
 
-// //une route pour le login
+
+/**
+ * @openapi
+ * /login:
+ *   post:
+ *     description: Cette route permet de pouvoir authentifier l'utillisateur et ensuite le connecter a la plateforme en cas de success
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.
+ *  
+ * 
+ * 
+ */
+
 router.post("/login", async (req, res) => {
   try {
     const data = req.body;
@@ -217,6 +261,7 @@ router.post("/login", async (req, res) => {
 //Format de mon token
 //Authorization: Bearer <<accesss_token>>
 
+
 const verifyToken = (req, res, next) => {
   const bearerHeader = req.headers["authorization"];
 
@@ -252,6 +297,22 @@ var storage = multer.diskStorage({
 });
 
 var upload = multer({ storage: storage });
+
+
+/**
+ * @openapi
+ * /upload:
+ *   post:
+ *     description: Cette route permet de faire l'upload de fichier vers amazon s3 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
 
 router.post("/upload", upload.single("subject"), async (req, res) => {
   const file = await req.file;
@@ -290,6 +351,21 @@ router.post("/upload", upload.single("subject"), async (req, res) => {
 //upload de corriger
 
 
+
+/**
+ * @openapi
+ * /upload/corriger:
+ *   post:
+ *     description: Cette route permet de faire l'upload de corriger de sujet vers amazon s3 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
 router.post("/upload/corriger", upload.single("subject"), async (req, res) => {
   const file = await req.file;
   try {
@@ -324,6 +400,21 @@ router.post("/upload/corriger", upload.single("subject"), async (req, res) => {
 
 
 
+/**
+ * @openapi
+ * /files/:domaine/:year:
+ *   get:
+ *     description: Cette route permet de recuperer des fichiers stocker sur aws s3 en specifiant le domaine et l'annee du sujet 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
+
 
 //files fetching from amazon s3
 router.get("/files/:domaine/:year", (req, res) => {
@@ -342,6 +433,22 @@ router.get("/files/:domaine/:year", (req, res) => {
   );
 });
 
+
+/**
+ * @openapi
+ * /secteur/:domaine:
+ *   get:
+ *     description: Cette route permet de recuperer des fichiers stocker sur aws s3 en specifiant le domaine et l'annee du sujet 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
+
 //si seulement domaine
 router.get("/secteur/:domaine", (req, res) => {
   var domaine = req.params.domaine;
@@ -358,6 +465,22 @@ router.get("/secteur/:domaine", (req, res) => {
   );
 });
 
+
+/**
+ * @openapi
+ * /files/:annee/:year:
+ *   get:
+ *     description: Cette route permet de recuperer des fichiers stocker sur aws s3 en specifiant l'année du sujet 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
+
 //si seulement annee
 router.get("/annee/:year", (req, res) => {
   var year = req.params.year;
@@ -373,6 +496,23 @@ router.get("/annee/:year", (req, res) => {
     }
   );
 });
+
+
+
+/**
+ * @openapi
+ * /files:
+ *   get:
+ *     description: Cette route permet de recuperer des fichiers stocker sur aws s3 en specifiant le domaine et l'annee du sujet 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
 
 router.get("/files", (req, res) => {
   var domaine = req.params.domaine;
@@ -394,6 +534,22 @@ const storeItems = new Map([
   [3, { priceInCents: 12000, name: "Plan de 4 mois" }],
   [4, { priceInCents: 20000, name: "Plan de 5 mois" }],
 ]);
+
+
+
+/**
+ * @openapi
+ * /payer:
+ *   post:
+ *     description: Cette route permet de recuperer les informations bancaires soumises par l'utillisateur et de pouvoir les traiter avec stripe
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
 
 router.post("/payer", async (req, res) => {
   try {
@@ -443,6 +599,22 @@ router.post("/payer", async (req, res) => {
 
 //recuperer corriger grace a lid du sujet
 
+
+/**
+ * @openapi
+ * /correction/single/:id:
+ *   get:
+ *     description: Cette route permet de recuperer des fichiers stocker sur aws s3 en specifiant le domaine et l'annee du sujet 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
+
 router.get('/correction/single/:id', (req, res) =>{
   let id  = req.params.id;
 
@@ -465,6 +637,19 @@ router.get('/correction/single/:id', (req, res) =>{
 
 
 
+/**
+ * @openapi
+ * /users:
+ *   get:
+ *     description: Cette route permet de recuperer la liste des utillisateurs 
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
 
 //get all the users
 router.get("/users", verifyToken, (req, res) => {
@@ -489,6 +674,21 @@ router.get("/users", verifyToken, (req, res) => {
 
 
 
+
+/**
+ * @openapi
+ * /transaction/:userid:
+ *   get:
+ *     description: cette route nous permet d'obtenir la liste des utilisateurs qui ont souscrit à une adhésion en passant leurs id dans lurl de la requete
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
 router.get("/transaction/:userid",(req, res) => {
 let userId = req.params.userid;
 
@@ -507,6 +707,20 @@ let userId = req.params.userid;
 
 
 //demande pour etre enseignant
+/**
+ * @openapi
+ * /demande:
+ *   post:
+ *     description: Cette route permet à un utilisateur de demander un changement de rôle
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
 
 router.post("/demande", (req, res) =>{
    const {user_id, user_sirname, user_name} = req.body;
@@ -529,6 +743,21 @@ router.post("/demande", (req, res) =>{
 
 //recuperer toute les demandes en tant que admin
 
+/**
+ * @openapi
+ * /consulter:
+ *   get:
+ *     description: cette route privée permet à l'admin de recuperer la liste de toutes les demandes de changement de rôle qui n'ont pas encore été validées
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
+
 router.get("/consulter",(req, res) => {
   let userId = req.params.userid;
   
@@ -545,6 +774,21 @@ router.get("/consulter",(req, res) => {
 
 
   //mettre as admin
+
+  /**
+ * @openapi
+ * /upvalidate/:userid:
+ *   post:
+ *     description: Cette route permet de changer le statut ou rôle d'un utilisateur après que sa demande ait été validéermet a ladmin de  par l'administrateur du site
+ *     responses:
+ *       200:
+ *         description: Success de l'inscription.,
+ *     
+ *   
+ * 
+ * 
+ */
+
 
   router.post("/upvalidate/:userid", (req, res) =>{
     const userid = req.params.userid;
@@ -564,6 +808,21 @@ router.get("/consulter",(req, res) => {
  
  )
  
+
+
+ /**
+ * @openapi
+ * /idsujet:
+ *   get:
+ *     description: cette route nous permet d'obtenir tous les identifiants uniques des sujets qui sont dans notre base de données
+ *     responses:
+ *       200:
+ *         description: .,
+ *     
+ *   
+ * 
+ * 
+ */
 
 
  router.get("/idsujet", (req, res) =>{

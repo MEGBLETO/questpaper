@@ -9,7 +9,7 @@ const Success = () => {
 
 
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("questoken");
     const [Loading, setloading] = useState(true);
 
     const [data, setdata] = useState()

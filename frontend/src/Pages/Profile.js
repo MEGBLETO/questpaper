@@ -3,7 +3,7 @@ import Prodata from "../components/Prodata";
 
 const Profile = () => {
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("questoken");
 
   const [data, setdata] = useState()
 

@@ -4,8 +4,27 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 var session = require('express-session')
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
 
 const app = express();
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Questpaper API documentation ',
+      version: '1.0.0',
+    },
+  },
+  apis: ['app.js', './routes/usersroute.js'], // files containing annotations as above
+};
+
+const openapiSpecification = swaggerJsdoc(options);
+
+console.log(openapiSpecification)
+
 
 //fileupload package
 var cors = require('cors')
@@ -24,6 +43,9 @@ app.use(cors({
 }
 ));
 app.options('*', cors());
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
 app.use(session({
   key: "user_id",

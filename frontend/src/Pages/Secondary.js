@@ -11,7 +11,7 @@ const Secondary = () => {
   const [subscribed, setSubscribed] = useState(false);
 
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("questoken");
 
   const [data, setdata] = useState()
 

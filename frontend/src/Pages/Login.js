@@ -42,7 +42,7 @@ const Login = () => {
         .then((response) => {
           if (response.data.serverRes === "success") {
             dispatch(situation(true));
-            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("questoken", response.data.token);
             Cookies.set("loggedIn", "true");
             // const token = localStorage.getItem("token");
             // dispatch(tokenstate(token));
